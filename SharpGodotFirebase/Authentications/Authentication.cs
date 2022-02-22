@@ -47,13 +47,17 @@ namespace SharpGodotFirebase.Authentications
         {
             httpRequest = hTTPRequest;
 
-            authenticationNode = new Authentication();
-            authenticationNode.Name = "Authentication";
+            authenticationNode = new Authentication
+            {
+                Name = "Authentication"
+            };
             FirebaseClient.Config.ParentNode.AddChild(authenticationNode);
 
             TCPServer = new TCP_Server();
-            TCPTimerNode = new Timer();
-            TCPTimerNode.Name = "AuthTCPTimer";
+            TCPTimerNode = new Timer
+            {
+                Name = "AuthTCPTimer"
+            };
             authenticationNode.AddChild(TCPTimerNode);
             TCPTimerNode.Connect(SignalString.Timeout, authenticationNode, nameof(OnTCPTimerTimeout));
 
@@ -70,14 +74,200 @@ namespace SharpGodotFirebase.Authentications
             string content = JsonConvert.SerializeObject(body);
 
             IRequestResult requestResult = await SendRequest(httpRequest, address, content);
-            AuthResult authResult = new AuthResult(requestResult);
-
-            if (authResult.EnsureSuccess())
+            if (requestResult.EnsureSuccess())
             {
-                return JsonConvert.DeserializeObject<Userdata>(authResult.Body);
+                return JsonConvert.DeserializeObject<Userdata>(requestResult.Body);
             }
 
             return null;
+        }
+
+        internal async Task<AuthResult> SignupWithEmailAndPassword(string email, string password)
+        {
+            string address = UrlBuilder.GetSignupWithEmailAndPasswordUrl();
+            var body = new
+            {
+                email = email,
+                password = password,
+                returnSecureToken = true
+            };
+            string content = JsonConvert.SerializeObject(body);
+            IRequestResult requestResult = await SendRequest(httpRequest, address, content);
+            AuthResult authResult = new AuthResult(requestResult);
+            if (authResult.EnsureSuccess())
+            {
+                Logger.Log("Signup with email and password success");
+                User = JsonConvert.DeserializeObject<FirebaseUser>(authResult.Body);
+                authResult.User = User;
+                long expiresAt = IdTokenManager.GetExpiresAt(User.ExpiresIn);
+                DataPersister.Build().AddData(IdTokenManager.FirebaseUserIdTokenExpiresAt, expiresAt)
+                    .AddDataAndSave(nameof(FirebaseUser), User);
+            }
+            else
+            {
+                if (string.IsNullOrEmpty(authResult.Body))
+                {
+                    authResult.AuthError = AuthError.GenerateError();
+                }
+                else
+                {
+                    authResult.AuthError = JsonConvert.DeserializeObject<AuthError>(authResult.Body);
+                }
+                Logger.LogErr("Signup with email and password ", authResult.AuthError.Error.Message);
+            }
+            return authResult;
+        }
+
+        internal async Task<AuthResult> SendEmailVerification(string idToken, string locale = "en")
+        {
+            string address = UrlBuilder.GetSendEmailVerificationUrl();
+            var body = new
+            {
+                requestType = "VERIFY_EMAIL",
+                idToken
+            };
+            string content = JsonConvert.SerializeObject(body);
+            string[] header = new string[3]
+            {
+                "Content-Type: application/json",
+                "Accept: application/json",
+                string.Format("X-Firebase-Locale : {0}", locale)
+            };
+            IRequestResult requestResult = await SendRequest(httpRequest, address, content, header);
+            AuthResult authResult = new AuthResult(requestResult);
+            if (authResult.EnsureSuccess())
+            {
+                Logger.Log("Sending email verification success");
+                authResult.User = User;
+            }
+            else
+            {
+                if (string.IsNullOrEmpty(authResult.Body))
+                {
+                    authResult.AuthError = AuthError.GenerateError();
+                }
+                else
+                {
+                    authResult.AuthError = JsonConvert.DeserializeObject<AuthError>(authResult.Body);
+                }
+                Logger.LogErr("Sending email verification ", authResult.AuthError.Error.Message);
+            }
+            return authResult;
+        }
+
+        internal async Task<Userdata> ConfirmEmailVerification(string oobCode)
+        {
+            string address = UrlBuilder.GetConfirmEmailUrl();
+            var body = new
+            {
+                oobCode,
+            };
+            string content = JsonConvert.SerializeObject(body);
+            IRequestResult requestResult = await SendRequest(httpRequest, address, content);
+            if (requestResult.EnsureSuccess())
+            {
+                return JsonConvert.DeserializeObject<Userdata>(requestResult.Body);
+            }
+            return null;
+
+        }
+
+        internal async Task<AuthResult> SendPasswordResetEmail(string email, string locale = "en")
+        {
+            string address = UrlBuilder.GetSendPasswordResetEmailUrl();
+            var body = new
+            {
+                requestType = "PASSWORD_RESET",
+                email
+            };
+            string[] header = new string[3]
+            {
+                "Content-Type: application/json",
+                "Accept: application/json",
+                string.Format("X-Firebase-Locale : {0}", locale)
+            };
+            string content = JsonConvert.SerializeObject(body);
+            IRequestResult requestResult = await SendRequest(httpRequest, address, content, header);
+            AuthResult authResult = new AuthResult(requestResult);
+            if (authResult.EnsureSuccess())
+            {
+                Logger.Log("Sending password reset email success");
+                authResult.User = User;
+            }
+            else
+            {
+                if (string.IsNullOrEmpty(authResult.Body))
+                {
+                    authResult.AuthError = AuthError.GenerateError();
+                }
+                else
+                {
+                    authResult.AuthError = JsonConvert.DeserializeObject<AuthError>(authResult.Body);
+                }
+                Logger.LogErr("Sending password reset email failed, ", authResult.AuthError.Error.Message);
+            }
+            return authResult;
+        }
+
+        internal async Task<AuthResult> VerifyPasswordResetCode(string oobCode)
+        {
+            string address = UrlBuilder.GetVerifyPasswordResetCodeUrl();
+            var body = new
+            {
+                oobCode
+            };
+            string content = JsonConvert.SerializeObject(body);
+            IRequestResult requestResult = await SendRequest(httpRequest, address, content);
+            AuthResult authResult = new AuthResult(requestResult);
+            if (authResult.EnsureSuccess())
+            {
+                Logger.Log("Verify password reset email success");
+                authResult.User = User;
+            }
+            else
+            {
+                if (string.IsNullOrEmpty(authResult.Body))
+                {
+                    authResult.AuthError = AuthError.GenerateError();
+                }
+                else
+                {
+                    authResult.AuthError = JsonConvert.DeserializeObject<AuthError>(authResult.Body);
+                }
+                Logger.LogErr("Verify password reset email failed, ", authResult.AuthError.Error.Message);
+            }
+            return authResult;
+        }
+
+        internal async Task<AuthResult> ConfirmPasswordReset(string oobCode, string newPassword)
+        {
+            string address = UrlBuilder.GetConfirmPasswordResetUrl();
+            var body = new
+            {
+                oobCode,
+                newPassword
+            };
+            string content = JsonConvert.SerializeObject(body);
+            IRequestResult requestResult = await SendRequest(httpRequest, address, content);
+            AuthResult authResult = new AuthResult(requestResult);
+            if (authResult.EnsureSuccess())
+            {
+                Logger.Log("Confirm update password success");
+                authResult.User = User;
+            }
+            else
+            {
+                if (string.IsNullOrEmpty(authResult.Body))
+                {
+                    authResult.AuthError = AuthError.GenerateError();
+                }
+                else
+                {
+                    authResult.AuthError = JsonConvert.DeserializeObject<AuthError>(authResult.Body);
+                }
+                Logger.LogErr("Confirm update password failed, ", authResult.AuthError.Error.Message);
+            }
+            return authResult;
         }
 
         internal async Task<AuthResult> SigninWithPassword(string username, string pass)

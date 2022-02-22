@@ -7,13 +7,17 @@
         private const string UserdataEndpoint = "accounts:lookup?key=";
         private const string SigninEndpoint = "accounts:signInWithPassword?key=";
         private const string SigninGoogleOAuthEndpoint = "accounts:signInWithIdp?key=";
-        private const string AnonymousSigninEndpoint = "accounts:signUp?key=";
+        private const string SignupEndpoint = "accounts:signUp?key=";
+        private const string SendOobCodeEndpoint = "accounts:sendOobCode?key=";
+        private const string UpdateAccountEndpoint = "accounts:update?key=";
         private const string DeleteAccountEndpoint = "accounts:delete?key=";
+        private const string ResetPasswordEndpoint = "accounts:resetPassword?key=";
         #endregion
 
         #region Authentication using Emulator        
         private const string LocalhostAddress = "http://127.0.0.1:";
         private const string EmulatedIdentityBaseUrl = "/identitytoolkit.googleapis.com/v1/";
+        private const string EmulatedOobCodes = "/emulator/v1/projects/";
         #endregion
 
         #region OAuth
@@ -30,6 +34,66 @@
         #endregion
 
         #region Authentication Methods
+        internal static string GetSignupWithEmailAndPasswordUrl()
+        {
+            string address = IdentityBaseUrl + SignupEndpoint+ FirebaseClient.Config.WebAPIKey;
+            if (FirebaseClient.Config.UseEmulator)
+            {
+                address = LocalhostAddress + FirebaseClient.Config.AuthEmulatorPort + EmulatedIdentityBaseUrl + SignupEndpoint + FirebaseClient.Config.WebAPIKey;
+            }
+            return address;
+        }
+
+        internal static string GetConfirmEmailUrl()
+        {
+            string address = IdentityBaseUrl + UpdateAccountEndpoint + FirebaseClient.Config.WebAPIKey;
+            if (FirebaseClient.Config.UseEmulator)
+            {
+                address = LocalhostAddress + FirebaseClient.Config.AuthEmulatorPort + EmulatedIdentityBaseUrl + UpdateAccountEndpoint + FirebaseClient.Config.WebAPIKey;
+            }
+            return address;
+        }
+
+        internal static string GetSendEmailVerificationUrl()
+        {
+            string address = IdentityBaseUrl + SendOobCodeEndpoint + FirebaseClient.Config.WebAPIKey;
+            if (FirebaseClient.Config.UseEmulator)
+            {
+                address = LocalhostAddress + FirebaseClient.Config.AuthEmulatorPort + EmulatedOobCodes + "/" + FirebaseClient.Config.ProjectId + "/oobCodes";
+            }
+            return address;
+        }
+
+        internal static string GetSendPasswordResetEmailUrl()
+        {
+            string address = IdentityBaseUrl + SendOobCodeEndpoint + FirebaseClient.Config.WebAPIKey;
+            /*if (FirebaseClient.Config.UseEmulator)
+            {
+                address = LocalhostAddress + FirebaseClient.Config.AuthEmulatorPort + EmulatedOobCodes + "/" + FirebaseClient.Config.ProjectId + "/oobCodes";
+            }*/
+            return address;
+        }
+
+        internal static string GetVerifyPasswordResetCodeUrl()
+        {
+            string address = IdentityBaseUrl + ResetPasswordEndpoint + FirebaseClient.Config.WebAPIKey;
+            /*if (FirebaseClient.Config.UseEmulator)
+            {
+                address = LocalhostAddress + FirebaseClient.Config.AuthEmulatorPort + EmulatedOobCodes + "/" + FirebaseClient.Config.ProjectId + "/oobCodes";
+            }*/
+            return address;
+        }
+
+        internal static string GetConfirmPasswordResetUrl()
+        {
+            string address = IdentityBaseUrl + ResetPasswordEndpoint + FirebaseClient.Config.WebAPIKey;
+            /*if (FirebaseClient.Config.UseEmulator)
+            {
+                address = LocalhostAddress + FirebaseClient.Config.AuthEmulatorPort + EmulatedOobCodes + "/" + FirebaseClient.Config.ProjectId + "/oobCodes";
+            }*/
+            return address;
+        }
+
         internal static string GetSigninWithPasswordUrl()
         {
             string address = IdentityBaseUrl + SigninEndpoint + FirebaseClient.Config.WebAPIKey;
@@ -42,10 +106,10 @@
 
         internal static string GetSigninAnonymousUrl()
         {
-            string address = IdentityBaseUrl + AnonymousSigninEndpoint + FirebaseClient.Config.WebAPIKey;
+            string address = IdentityBaseUrl + SignupEndpoint + FirebaseClient.Config.WebAPIKey;
             if (FirebaseClient.Config.UseEmulator)
             {
-                address = LocalhostAddress + FirebaseClient.Config.AuthEmulatorPort + EmulatedIdentityBaseUrl + AnonymousSigninEndpoint + FirebaseClient.Config.WebAPIKey;
+                address = LocalhostAddress + FirebaseClient.Config.AuthEmulatorPort + EmulatedIdentityBaseUrl + SignupEndpoint + FirebaseClient.Config.WebAPIKey;
             }
             return address;
         }
@@ -132,17 +196,17 @@
             {
                 address = LocalhostAddress + FirebaseClient.Config.FirestoreEmulatorPort + EmulatedFirestoreBaseUrl + FirestoreEndpoint + database + "/documents/" + path;
             }
-            address = address.Replace("[PROJECT_ID]", FirebaseClient.Config.ProjectID);
+            address = address.Replace("[PROJECT_ID]", FirebaseClient.Config.ProjectId);
 
             return address;
         }
 
         internal static string GetRealtimeUrl(string path, string database = "default")
         {
-            string address = string.Format("https://{0}-{1}-rtdb.{2}.firebasedatabase.app/{3}.json?auth={4}", FirebaseClient.Config.ProjectID, database, FirebaseClient.Config.RealtimeDBRegion, path, FirebaseClient.User.IdToken);
+            string address = string.Format("https://{0}-{1}-rtdb.{2}.firebasedatabase.app/{3}.json?auth={4}", FirebaseClient.Config.ProjectId, database, FirebaseClient.Config.RealtimeDBRegion, path, FirebaseClient.User.IdToken);
             if (FirebaseClient.Config.UseEmulator)
             {
-                address = string.Format("{0}{1}/{2}.json?ns={3}-{4}-rtdb&auth={5}", LocalhostAddress, FirebaseClient.Config.RealtimeDBEmultorport, path, FirebaseClient.Config.ProjectID, database, FirebaseClient.User.IdToken);
+                address = string.Format("{0}{1}/{2}.json?ns={3}-{4}-rtdb&auth={5}", LocalhostAddress, FirebaseClient.Config.RealtimeDBEmultorport, path, FirebaseClient.Config.ProjectId, database, FirebaseClient.User.IdToken);
             }
 
             return address;

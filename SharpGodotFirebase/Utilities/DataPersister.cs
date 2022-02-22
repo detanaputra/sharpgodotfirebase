@@ -21,7 +21,7 @@ namespace SharpGodotFirebase.Utilities
             return new DataPersister();
         }
 
-        protected static Dictionary<string, object> PersistedData { get; set; } = new Dictionary<string, object>();
+        protected static Dictionary<string, string> PersistedData { get; set; } = new Dictionary<string, string>();
 
         internal DataPersister AddData(string key, object value)
         {
@@ -46,6 +46,7 @@ namespace SharpGodotFirebase.Utilities
             }
             file.Open(filePath, File.ModeFlags.Write);
             file.StoreString(JsonConvert.SerializeObject(PersistedData));
+            //file.StorePascalString(JsonConvert.SerializeObject(PersistedData));
             file.Close();
             return this;
         }
@@ -65,7 +66,8 @@ namespace SharpGodotFirebase.Utilities
                 InitiateFirstData();
             }
             file.Open(filePath, File.ModeFlags.Read);
-            Dictionary<string, object> data = JsonConvert.DeserializeObject<Dictionary<string, object>>(file.GetAsText());
+            Dictionary<string, string> data = JsonConvert.DeserializeObject<Dictionary<string, string>>(file.GetAsText());
+            //Dictionary<string, string> data = JsonConvert.DeserializeObject<Dictionary<string, string>>(file.GetPascalString());
             file.Close();
             PersistedData = data;
             return this;

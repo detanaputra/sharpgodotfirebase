@@ -1,0 +1,41 @@
+﻿
+Microsoft Visual Studio Solution File, Format Version 12.00
+# Visual Studio Version 16
+VisualStudioVersion = 16.0.32126.315
+MinimumVisualStudioVersion = 10.0.40219.1
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "SharpGodotFirebaseTest", "SharpGodotFirebaseTest.csproj", "{FBD34F10-6B49-4EFF-8E00-FA574252619B}"
+EndProject
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "SharpGodotFirebase", "..\SharpGodotFirebase\SharpGodotFirebase.csproj", "{48520317-D598-4A1D-8046-9EC12AF020DF}"
+EndProject
+Global
+	GlobalSection(SolutionConfigurationPlatforms) = preSolution
+		Debug|Any CPU = Debug|Any CPU
+		ExportDebug|Any CPU = ExportDebug|Any CPU
+		ExportRelease|Any CPU = ExportRelease|Any CPU
+		Release|Any CPU = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(ProjectConfigurationPlatforms) = postSolution
+		{FBD34F10-6B49-4EFF-8E00-FA574252619B}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{FBD34F10-6B49-4EFF-8E00-FA574252619B}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{FBD34F10-6B49-4EFF-8E00-FA574252619B}.ExportDebug|Any CPU.ActiveCfg = ExportDebug|Any CPU
+		{FBD34F10-6B49-4EFF-8E00-FA574252619B}.ExportDebug|Any CPU.Build.0 = ExportDebug|Any CPU
+		{FBD34F10-6B49-4EFF-8E00-FA574252619B}.ExportRelease|Any CPU.ActiveCfg = ExportRelease|Any CPU
+		{FBD34F10-6B49-4EFF-8E00-FA574252619B}.ExportRelease|Any CPU.Build.0 = ExportRelease|Any CPU
+		{FBD34F10-6B49-4EFF-8E00-FA574252619B}.Release|Any CPU.ActiveCfg = ExportRelease|Any CPU
+		{FBD34F10-6B49-4EFF-8E00-FA574252619B}.Release|Any CPU.Build.0 = ExportRelease|Any CPU
+		{48520317-D598-4A1D-8046-9EC12AF020DF}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{48520317-D598-4A1D-8046-9EC12AF020DF}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{48520317-D598-4A1D-8046-9EC12AF020DF}.ExportDebug|Any CPU.ActiveCfg = Debug|Any CPU
+		{48520317-D598-4A1D-8046-9EC12AF020DF}.ExportDebug|Any CPU.Build.0 = Debug|Any CPU
+		{48520317-D598-4A1D-8046-9EC12AF020DF}.ExportRelease|Any CPU.ActiveCfg = Release|Any CPU
+		{48520317-D598-4A1D-8046-9EC12AF020DF}.ExportRelease|Any CPU.Build.0 = Release|Any CPU
+		{48520317-D598-4A1D-8046-9EC12AF020DF}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{48520317-D598-4A1D-8046-9EC12AF020DF}.Release|Any CPU.Build.0 = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(SolutionProperties) = preSolution
+		HideSolutionNode = FALSE
+	EndGlobalSection
+	GlobalSection(ExtensibilityGlobals) = postSolution
+		SolutionGuid = {FD96AEC1-8B69-4C89-8E33-7EAEEE3938A1}
+	EndGlobalSection
+EndGlobal
