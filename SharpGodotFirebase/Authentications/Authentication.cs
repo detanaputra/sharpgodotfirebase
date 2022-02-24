@@ -124,14 +124,14 @@ namespace SharpGodotFirebase.Authentications
             var body = new
             {
                 requestType = "VERIFY_EMAIL",
-                idToken
+                idToken = idToken
             };
             string content = JsonConvert.SerializeObject(body);
             string[] header = new string[3]
             {
                 "Content-Type: application/json",
                 "Accept: application/json",
-                string.Format("X-Firebase-Locale : {0}", locale)
+                string.Format("X-Firebase-Locale: {0}", locale)
             };
             IRequestResult requestResult = await SendRequest(httpRequest, address, content, header);
             AuthResult authResult = new AuthResult(requestResult);
@@ -178,13 +178,13 @@ namespace SharpGodotFirebase.Authentications
             var body = new
             {
                 requestType = "PASSWORD_RESET",
-                email
+                email = email
             };
             string[] header = new string[3]
             {
                 "Content-Type: application/json",
                 "Accept: application/json",
-                string.Format("X-Firebase-Locale : {0}", locale)
+                string.Format("X-Firebase-Locale: {0}", locale)
             };
             string content = JsonConvert.SerializeObject(body);
             IRequestResult requestResult = await SendRequest(httpRequest, address, content, header);

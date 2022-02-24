@@ -6,6 +6,7 @@ using SharpGodotFirebase.Realtime;
 using SharpGodotFirebase.Utilities;
 
 using System;
+using System.Collections.Generic;
 using System.Threading.Tasks;
 
 namespace SharpGodotFirebase
@@ -37,7 +38,7 @@ namespace SharpGodotFirebase
             
             Authentication.Initialize(HttpRequest);
             FirestoreDB.Initialize(HttpRequest);
-            RealtimeDB.Initialize(HttpRequest);
+            RealtimeDb.Initialize(HttpRequest);
 
             
             IsInitialized = true;
@@ -51,22 +52,80 @@ namespace SharpGodotFirebase
             get => Authentication.User;
         }
 
+        /// <summary>
+        /// Signup with email and password. After calling this API and get the FirebaseUser object, you should send confirmation email with <see cref="SendEmailVerification(string, string)"/>
+        /// </summary>
+        /// <param name="email">User's registered email address</param>
+        /// <param name="password">User's password</param>
+        /// <returns>AuthResult that contain FirebaseUser object. You should treat this user object like anonymous one because the user hasn't verify the email address yet.</returns>
         public static async Task<AuthResult> SignupWithEmailAndPassword(string email, string password)
         {
             EnsureInit();
             return await new Authentication().SignupWithEmailAndPassword(email, password);
         }
 
+        /// <summary>
+        /// Send email verification to registered user's email containing out of band code.
+        /// </summary>
+        /// <param name="idToken">User's generated idToken from FirebaseUser object</param>
+        /// <param name="locale">optional parameter that indicate in what languange your Email Confirmation will be. Default is "en"</param>
+        /// <returns>AuthResult</returns>
         public static async Task<AuthResult> SendEmailVerification(string idToken, string locale = "en")
         {
             EnsureInit();
             return await new Authentication().SendEmailVerification(idToken, locale);
         }
 
+        /// <summary>
+        /// Send the out of band code (oobCode) to Firebase to complete the email verification process. <br />
+        /// Mostlikely you don't need to call this API because user usually click the link sent to their email to verify email.
+        /// </summary>
+        /// <param name="oobCode">Out of band code the user get form verification email</param>
+        /// <returns>Userdata object. Please notice that due to response payload of this API from Firebase, the userdata object returned is not complete, <br />
+        /// some of the Userdata property will return null or empty string. If you need the complete Userdata object, call <see cref="GetUserData(string)"/> after calling this API.<br/>
+        /// This behaviour would likely to change in the future.
+        /// </returns>
         public static async Task<Userdata> ConfirmEmailVerification(string oobCode)
         {
             EnsureInit();
             return await new Authentication().ConfirmEmailVerification(oobCode);
+        }
+
+        /// <summary>
+        /// Send password reset link to user's registered email.
+        /// </summary>
+        /// <param name="email">User's registered email</param>
+        /// <param name="locale">Localization setting, default is en for english</param>
+        /// <returns>AuthResult object</returns>
+        public static async Task<AuthResult> SendPasswordResetEmail(string email, string locale = "en")
+        {
+            EnsureInit();
+            return await new Authentication().SendPasswordResetEmail(email, locale);
+        }
+
+        /// <summary>
+        /// Verify password reset code by sending oobcode received by user to Firebase.<br />
+        /// Mostlikely you don't need to call this API because usually user click the link sent to their email to update password.
+        /// </summary>
+        /// <param name="oobCode"></param>
+        /// <returns></returns>
+        public static async Task<AuthResult> VerifyPasswordResetCode(string oobCode)
+        {
+            EnsureInit();
+            return await new Authentication().VerifyPasswordResetCode(oobCode);
+        }
+
+        /// <summary>
+        /// Finisih password reset sequence by sending oobcode and new password to Firebase.<br />
+        /// Mostlikely you don't need to call this API because usually user click the link sent to their email to update password.
+        /// </summary>
+        /// <param name="oobCode"></param>
+        /// <param name="newPassword"></param>
+        /// <returns></returns>
+        public static async Task<AuthResult> ConfirmPasswordReset(string oobCode, string newPassword)
+        {
+            EnsureInit();
+            return await new Authentication().ConfirmPasswordReset(oobCode, newPassword);
         }
 
         /// <summary>
@@ -161,44 +220,59 @@ namespace SharpGodotFirebase
         }
 
         /// <summary>
-        /// Delete user account on Firebase Project. This method delete user immediately so You have to ask confirmation from user first.
+        /// Delete user account on Firebase Project. This API delete user immediately so your game should handle the confirmation process to User.
         /// </summary>
         /// <param name="user">Firebase user</param>
-        /// <returns>AuthResult object that hold Result, Response Code, User, and AuthError object.</returns>
+        /// <returns>AuthResult object that hold Result, Response Code, User, and AuthError object. the FirebaseUser object returned will be null</returns>
         public static async Task<AuthResult> DeleteAccount(FirebaseUser user)
         {
             return await new Authentication().DeleteAccount(user);
         }
 
         /// <summary>
-        /// No Documentation yet
+        /// Get the document from Realtime database.
+        /// </summary>
+        /// <typeparam name="T"></typeparam>
+        /// <param name="query">child query that hold address location in Realtime database json tree</param>
+        /// <param name="database">Your database name. Default is "default"</param>
+        /// <returns>RealtimeResult object that hold RealtimeDbDocument property which have Value with type of <typeparamref name="T"/>. <br />
+        /// Data property is null if the request is succesfully made but no document is found.
+        /// </returns>
+        public static async Task<RealtimeResult<T>> GetRealtimeDocument<T>(ChildQuery query, string database = "default")
+        {
+            EnsureInit();
+            return await new RealtimeDb().GetDocument<T>(query, database);
+        }
+
+        /// <summary>
+        /// Get all documents from Realtime database collection.
         /// </summary>
         /// <typeparam name="T"></typeparam>
         /// <param name="query"></param>
         /// <param name="database"></param>
-        /// <returns></returns>
-        public static async Task<RealtimeResult<T>> GetRealtimeDocument<T>(ChildQuery query, string database = "default")
+        /// <returns>IEnumerable of RealtimeDbDocument by getting Collection property</returns>
+        public static async Task<RealtimeResult<T>> GetRealtimeCollection<T>(ChildQuery query, string database = "default")
         {
             EnsureInit();
-            return await new RealtimeDB().GetDocument<T>(query, database);
+            return await new RealtimeDb().GetCollection<T>(query, database);
         }
 
         /// <summary>
-        /// No Documentation yet
+        /// Put or overwrite data into a realtime document. ChildQuery object should refer to a Document path.
         /// </summary>
         /// <typeparam name="T"></typeparam>
-        /// <param name="query"></param>
+        /// <param name="query">ChildQuery object that refer to a Document path</param>
         /// <param name="data"></param>
         /// <param name="database"></param>
         /// <returns></returns>
         public static async Task<RealtimeResult<T>> PutRealtimeDocument<T>(ChildQuery query, T data, string database = "default")
         {
             EnsureInit();
-            return await new RealtimeDB().PutDocument<T>(query, data, database);
+            return await new RealtimeDb().PutDocument<T>(query, data, database);
         }
 
         /// <summary>
-        /// No Documentation yet
+        /// Post data into a realtime collection and generate random string as a key. ChildQuery object should refer to a Collection path.
         /// </summary>
         /// <typeparam name="T"></typeparam>
         /// <param name="query"></param>
@@ -208,7 +282,19 @@ namespace SharpGodotFirebase
         public static async Task<RealtimeResult<T>> PostRealtimeDocument<T>(ChildQuery query, T data, string database = "default")
         {
             EnsureInit();
-            return await new RealtimeDB().PostDocument<T>(query, data, database);
+            return await new RealtimeDb().PostDocument<T>(query, data, database);
+        }
+
+        public static async Task<RealtimeResult<Dictionary<string, object>>> PatchRealtimeDocument(ChildQuery query, Dictionary<string, object> data, string database = "default")
+        {
+            EnsureInit();
+            return await new RealtimeDb().PatchDocument(query, data, database);
+        }
+
+        public static async Task<RealtimeResult> DeleteDocument(ChildQuery query, string database = "default")
+        {
+            EnsureInit();
+            return await new RealtimeDb().DeleteDocument(query, database);
         }
 
         private static void EnsureInit()
