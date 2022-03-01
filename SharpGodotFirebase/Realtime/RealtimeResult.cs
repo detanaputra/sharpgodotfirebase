@@ -6,7 +6,6 @@ namespace SharpGodotFirebase.Realtime
     {
         public RealtimeDbDocument<T> Document { get; set; }
         public IEnumerable<RealtimeDbDocument<T>> Collection { get; set; }
-        public RealtimeError RealtimeError { get; set; }
 
         public RealtimeResult()
         {
@@ -38,8 +37,6 @@ namespace SharpGodotFirebase.Realtime
 
     public class RealtimeResult : IRequestResult
     {
-        public RealtimeError RealtimeError { get; set; }
-
         public RealtimeResult()
         {
 

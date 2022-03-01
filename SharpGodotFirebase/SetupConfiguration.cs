@@ -63,6 +63,14 @@ namespace SharpGodotFirebase
         /// </summary>
         public string RealtimeDBRegion { get; set; }
 
+        /// <summary>
+        /// An API SECRET generated in the Google Analytics UI. To create a new secret, navigate to: <br />
+        /// Admin > Data Streams > choose your stream > Measurement Protocol > Create. See <see href="https://developers.google.com/analytics/devguides/collection/protocol/ga4/sending-events?client_type=firebase#required_parameters">here </see>
+        /// </summary>
+        public string AnalyticApiSecret { get; set; } = string.Empty;
+
+        public string MeasurementId { get; set; } = string.Empty;
+
         public SetupConfiguration()
         {
 

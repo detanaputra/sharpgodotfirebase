@@ -8,7 +8,7 @@ using System.Threading.Tasks;
 
 namespace SharpGodotFirebase
 {
-    public class FirebaseRequester : Node
+    internal abstract class FirebaseRequester : Node
     {
         protected static HTTPRequest HttpRequest;
         

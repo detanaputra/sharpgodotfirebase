@@ -43,7 +43,7 @@ namespace SharpGodotFirebase.Authentications
         private enum OAuthAction { Signin, Link, Unlink }
         private static OAuthAction currentOAuthAction = OAuthAction.Signin;
 
-        internal static void Initialize(HTTPRequest hTTPRequest)
+        internal static async Task InitializeAsync(HTTPRequest hTTPRequest)
         {
             httpRequest = hTTPRequest;
 
@@ -61,7 +61,7 @@ namespace SharpGodotFirebase.Authentications
             authenticationNode.AddChild(TCPTimerNode);
             TCPTimerNode.Connect(SignalString.Timeout, authenticationNode, nameof(OnTCPTimerTimeout));
 
-            LoadCachedFirebaseUserOrRefresh();
+            await LoadCachedFirebaseUserOrRefresh();
         }
 
         internal async Task<Userdata> GetUserData(string _idToken)
@@ -406,6 +406,7 @@ namespace SharpGodotFirebase.Authentications
         internal async Task<bool> Signout()
         {
             User = null;
+            DataPersister.Build().RemoveDataAndSave(nameof(FirebaseUser)); 
             return await Task.FromResult<bool>(true);
         }
 
@@ -563,7 +564,7 @@ namespace SharpGodotFirebase.Authentications
             return new AuthResult(requestResult);
         }
 
-        private static async void LoadCachedFirebaseUserOrRefresh()
+        private static async Task LoadCachedFirebaseUserOrRefresh()
         {
             FirebaseUser user = DataPersister.Build().GetValue<FirebaseUser>(nameof(FirebaseUser));
             if (IdTokenManager.IsExpired())

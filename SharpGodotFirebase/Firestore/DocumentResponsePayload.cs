@@ -11,6 +11,4 @@ namespace SharpGodotFirebase.Firestore
         public string CreatedTime { get; set; }
         public string UpdatedTime { get; set; }
     }
-
-    // TODO RequestResult -> FirebaseResult -> D
 }

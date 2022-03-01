@@ -19,7 +19,7 @@ namespace SharpGodotFirebase.Utilities
         private static void Convert(object[] msg, out object[] newMsg)
         {
             newMsg = new object[msg.Length + 1];
-            newMsg[0] = "[GodotSharpFirebase]--> ";
+            newMsg[0] = "[SharpGodotFirebase]--> ";
             for (int i = 0; i < msg.Length; i++)
             {
                 newMsg[i + 1] = msg[i];

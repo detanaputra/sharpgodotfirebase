@@ -16,7 +16,7 @@ namespace SharpGodotFirebase.Realtime
         internal static void Initialize(HTTPRequest hTTPRequest)
         {
             HttpRequest = hTTPRequest;
-            realtimeDbNode = new RealtimeDb();
+            realtimeDbNode = new RealtimeDb() { Name = "RealtimeDb" };
             FirebaseClient.Config.ParentNode.AddChild(realtimeDbNode);
         }
 
@@ -27,20 +27,15 @@ namespace SharpGodotFirebase.Realtime
             RealtimeResult<T> realtimeResult = new RealtimeResult<T>(requestResult);
             if (realtimeResult.EnsureSuccess())
             {
-                Logger.Log("Document received: ", realtimeResult.Body);
-                realtimeResult.Document = new RealtimeDbDocument<T>(childQuery.LastSection, JsonConvert.DeserializeObject<T>(realtimeResult.Body));
+                if(realtimeResult.Body != null & realtimeResult.Body != "null")
+                {
+                    Logger.Log("Document received: ", realtimeResult.Body);
+                    realtimeResult.Document = new RealtimeDbDocument<T>(childQuery.LastSection, JsonConvert.DeserializeObject<T>(realtimeResult.Body));
+                }
             }
             else
             {
-                if (string.IsNullOrEmpty(realtimeResult.Body) | realtimeResult.Body == "null")
-                {
-                    realtimeResult.RealtimeError = RealtimeError.GenerateError();
-                }
-                else
-                {
-                    realtimeResult.RealtimeError = JsonConvert.DeserializeObject<RealtimeError>(realtimeResult.Body);
-                }
-                Logger.LogErr(realtimeResult.RealtimeError.Error.Code, realtimeResult.RealtimeError.Error.Message);
+                Logger.LogErr("Error in getting Realtime document: ", realtimeResult.Body);
             }
             return realtimeResult;
         }
@@ -52,20 +47,15 @@ namespace SharpGodotFirebase.Realtime
             RealtimeResult<T> realtimeResult = new RealtimeResult<T>(requestResult);
             if (realtimeResult.EnsureSuccess())
             {
-                Logger.Log("Document received.");
-                realtimeResult.Collection = ProcessRawJSONString<T>(realtimeResult.Body);
+                if (realtimeResult.Body != null & realtimeResult.Body != "null")
+                {
+                    Logger.Log("Collection received.");
+                    realtimeResult.Collection = ProcessRawJSONString<T>(realtimeResult.Body);
+                }
             }
             else
             {
-                if (string.IsNullOrEmpty(realtimeResult.Body) | realtimeResult.Body == "null")
-                {
-                    realtimeResult.RealtimeError = RealtimeError.GenerateError();
-                }
-                else
-                {
-                    realtimeResult.RealtimeError = JsonConvert.DeserializeObject<RealtimeError>(realtimeResult.Body);
-                }
-                Logger.LogErr(realtimeResult.RealtimeError.Error.Code, realtimeResult.RealtimeError.Error.Message);
+                Logger.LogErr("Error in getting Realtime collection: ", realtimeResult.Body);
             }
             return realtimeResult;
         }
@@ -83,15 +73,7 @@ namespace SharpGodotFirebase.Realtime
             }
             else
             {
-                if (string.IsNullOrEmpty(realtimeResult.Body) | realtimeResult.Body == "null")
-                {
-                    realtimeResult.RealtimeError = RealtimeError.GenerateError();
-                }
-                else
-                {
-                    realtimeResult.RealtimeError = JsonConvert.DeserializeObject<RealtimeError>(realtimeResult.Body);
-                }
-                Logger.LogErr(realtimeResult.RealtimeError.Error.Code, realtimeResult.RealtimeError.Error.Message);
+                Logger.LogErr("Error in putting Realtime document: ", realtimeResult.Body);
             }
             return realtimeResult;
         }
@@ -111,15 +93,7 @@ namespace SharpGodotFirebase.Realtime
             }
             else
             {
-                if (string.IsNullOrEmpty(realtimeResult.Body) | realtimeResult.Body == "null")
-                {
-                    realtimeResult.RealtimeError = RealtimeError.GenerateError();
-                }
-                else
-                {
-                    realtimeResult.RealtimeError = JsonConvert.DeserializeObject<RealtimeError>(realtimeResult.Body);
-                }
-                Logger.LogErr(realtimeResult.RealtimeError.Error.Code, realtimeResult.RealtimeError.Error.Message);
+                Logger.LogErr("Error in posting Realtime document: ", realtimeResult.Body);
             }
             return realtimeResult;
         }
@@ -136,15 +110,7 @@ namespace SharpGodotFirebase.Realtime
             }
             else
             {
-                if (string.IsNullOrEmpty(realtimeResult.Body) | realtimeResult.Body == "null")
-                {
-                    realtimeResult.RealtimeError = RealtimeError.GenerateError();
-                }
-                else
-                {
-                    realtimeResult.RealtimeError = JsonConvert.DeserializeObject<RealtimeError>(realtimeResult.Body);
-                }
-                Logger.LogErr(realtimeResult.RealtimeError.Error.Code, realtimeResult.RealtimeError.Error.Message);
+                Logger.LogErr("Error in patching Realtime document: ", realtimeResult.Body);
             }
             return realtimeResult;
         }
@@ -160,15 +126,7 @@ namespace SharpGodotFirebase.Realtime
             }
             else
             {
-                if (string.IsNullOrEmpty(realtimeResult.Body) | realtimeResult.Body == "null")
-                {
-                    realtimeResult.RealtimeError = RealtimeError.GenerateError();
-                }
-                else
-                {
-                    realtimeResult.RealtimeError = JsonConvert.DeserializeObject<RealtimeError>(realtimeResult.Body);
-                }
-                Logger.LogErr(realtimeResult.RealtimeError.Error.Code, realtimeResult.RealtimeError.Error.Message);
+                Logger.LogErr("Error in deleting Realtime document: ", realtimeResult.Body);
             }
             return realtimeResult;
         }

@@ -1,8 +1,10 @@
 ﻿using Godot;
 
+using SharpGodotFirebase.Analytics;
 using SharpGodotFirebase.Authentications;
 using SharpGodotFirebase.Firestore;
 using SharpGodotFirebase.Realtime;
+using SharpGodotFirebase.RemoteConfigs;
 using SharpGodotFirebase.Utilities;
 
 using System;
@@ -24,7 +26,7 @@ namespace SharpGodotFirebase
         /// Initializing SharpGodotFirebase. It is recomended to initialize it once before any user interface come to screen like in game splash screen.
         /// </summary>
         /// <param name="config"></param>
-        public static void Initialize(SetupConfiguration config)
+        public static async Task InitializeAsync(SetupConfiguration config)
         {
             Config = config;
 
@@ -36,10 +38,11 @@ namespace SharpGodotFirebase
             
             DataPersister.Build().Load();
             
-            Authentication.Initialize(HttpRequest);
-            FirestoreDB.Initialize(HttpRequest);
+            await Authentication.InitializeAsync(HttpRequest);
             RealtimeDb.Initialize(HttpRequest);
-
+            Analytic.Initialize(HttpRequest);
+            RemoteConfig.Initialize(HttpRequest);
+            //FirestoreDB.Initialize(HttpRequest);
             
             IsInitialized = true;
         }
@@ -285,17 +288,63 @@ namespace SharpGodotFirebase
             return await new RealtimeDb().PostDocument<T>(query, data, database);
         }
 
+        /// <summary>
+        /// Patch/update data into a realtime document. This API allow user to send changed data only without overwriting other document property.<br /> 
+        /// ChildQuery object should refer to a document path.
+        /// </summary>
+        /// <param name="query"></param>
+        /// <param name="data"></param>
+        /// <param name="database"></param>
+        /// <returns></returns>
         public static async Task<RealtimeResult<Dictionary<string, object>>> PatchRealtimeDocument(ChildQuery query, Dictionary<string, object> data, string database = "default")
         {
             EnsureInit();
             return await new RealtimeDb().PatchDocument(query, data, database);
         }
 
+        /// <summary>
+        /// Delete a realtime document. This API delete document immediately so you should provide User Confirmation first before invoking this API.<br /> 
+        /// ChildQuery object should refer to a document path.
+        /// </summary>
+        /// <param name="query"></param>
+        /// <param name="database"></param>
+        /// <returns></returns>
         public static async Task<RealtimeResult> DeleteDocument(ChildQuery query, string database = "default")
         {
             EnsureInit();
             return await new RealtimeDb().DeleteDocument(query, database);
         }
+
+        /// <summary>
+        /// Send Analytic Event[s] to Firebase using Measurement Protocol Beta (Googgle Analytics 4). If UseEmulator is set to true, then Events will not be sent.
+        /// </summary>
+        /// <param name="event"></param>
+        public static async void SendEventAnalytic(params Event[] events)
+        {
+            if (Config.UseEmulator)
+            {
+                Logger.Log("Sending event is canceled. Reason: UsingEmulator set to true. Did you mean to use SendDebugEventAnalytic(events) instead?");
+                //return;
+            }
+            await new Analytic().SendEvent(events);
+        }
+
+        /// <summary>
+        /// Send Debug Analytic Event to Firebase.
+        /// </summary>
+        /// <param name="@events"></param>
+        /// <returns></returns>
+        public static async Task<IRequestResult> SendDebugEventAnalytic(Event @event)
+        {
+            EnsureInit();
+            return await new Analytic().SendDebugEvent(@event);
+        }
+/*
+        public static async Task<RemoteConfigResult> GetRemoteConfig()
+        {
+            EnsureInit();
+            return await new RemoteConfig().GetRemoteConfig();
+        }*/
 
         private static void EnsureInit()
         {

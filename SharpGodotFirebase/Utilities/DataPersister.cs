@@ -37,6 +37,15 @@ namespace SharpGodotFirebase.Utilities
             return this;
         }
 
+        internal DataPersister RemoveData(string key)
+        {
+            if (PersistedData.ContainsKey(key))
+            {
+                PersistedData.Remove(key);
+            }
+            return this;
+        }
+
         internal DataPersister Save()
         {
             File file = new File();
@@ -53,9 +62,12 @@ namespace SharpGodotFirebase.Utilities
 
         internal DataPersister AddDataAndSave(string key, object value)
         {
-            AddData(key, value);
-            Save();
-            return this;
+            return AddData(key, value).Save();
+        }
+
+        internal DataPersister RemoveDataAndSave(string key)
+        {
+            return RemoveData(key).Save();
         }
 
         internal DataPersister Load()

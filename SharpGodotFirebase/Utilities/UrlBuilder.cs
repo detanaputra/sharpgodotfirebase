@@ -204,11 +204,49 @@
         internal static string GetRealtimeUrl(string path, string database = "default")
         {
             string address = string.Format("https://{0}-{1}-rtdb.{2}.firebasedatabase.app/{3}.json?auth={4}", FirebaseClient.Config.ProjectId, database, FirebaseClient.Config.RealtimeDBRegion, path, FirebaseClient.User.IdToken);
+            if (FirebaseClient.Config.RealtimeDBRegion == "us-central1")
+            {
+                address = string.Format("https://{0}.firebaseio.com/{1}.json?auth={2}", database, path, FirebaseClient.User.IdToken);
+            }
             if (FirebaseClient.Config.UseEmulator)
             {
                 address = string.Format("{0}{1}/{2}.json?ns={3}-{4}-rtdb&auth={5}", LocalhostAddress, FirebaseClient.Config.RealtimeDBEmultorport, path, FirebaseClient.Config.ProjectId, database, FirebaseClient.User.IdToken);
             }
 
+            return address;
+        }
+
+        #region Analytic
+        internal static string GetAnalyticUrl(Analytics.Event @event)
+        {
+            //string address = string.Format("https://www.google-analytics.com/mp/collect?firebase_app_id={0}&api_secret={1}", FirebaseClient.Config.AppId, FirebaseClient.Config.AnalyticApiSecret);
+            string address = string.Format("https://www.google-analytics.com/g/collect?v=2&tid={0}&_dbg=0&en={1}&ep.origin=firebase", FirebaseClient.Config.MeasurementId, @event.Name);
+            return address;
+        }
+
+        internal static string GetDebugAnalyticUrl(Analytics.Event @event)
+        {
+            //string address = string.Format("https://www.google-analytics.com/debug/mp/collect?firebase_app_id={0}&api_secret={1}", FirebaseClient.Config.AppId, FirebaseClient.Config.AnalyticApiSecret);
+            string address = string.Format("https://www.google-analytics.com/g/collect?v=2&tid={0}&_dbg=1&en={1}&ep.origin=firebase", FirebaseClient.Config.MeasurementId, @event.Name);
+            return address;
+        }
+
+        internal static string GetDebugAnalyticUrlMP4()
+        {
+            string address = string.Format("https://www.google-analytics.com/debug/mp/collect?firebase_app_id={0}&api_secret={1}", FirebaseClient.Config.AppId, FirebaseClient.Config.AnalyticApiSecret);
+            return address;
+        }
+
+        internal static string GetAnalyticUrlMP4()
+        {
+            string address = string.Format("https://www.google-analytics.com/mp/collect?firebase_app_id={0}&api_secret={1}", FirebaseClient.Config.AppId, FirebaseClient.Config.AnalyticApiSecret);
+            return address;
+        }
+        #endregion
+
+        internal static string GetRemoteConfigUrl()
+        {
+            string address = string.Format("https://firebaseremoteconfig.googleapis.com/v1/projects/{0}/remoteConfig", FirebaseClient.Config.ProjectId);
             return address;
         }
     }
