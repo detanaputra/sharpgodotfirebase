@@ -54,6 +54,11 @@
             return address;
         }
 
+        internal static string GetLinkUserWithEmailUrl()
+        {
+            return GetConfirmEmailUrl();
+        }
+
         internal static string GetSendEmailVerificationUrl()
         {
             string address = IdentityBaseUrl + SendOobCodeEndpoint + FirebaseClient.Config.WebAPIKey;

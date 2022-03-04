@@ -26,7 +26,7 @@ namespace SharpGodotFirebase
         /// Initializing SharpGodotFirebase. It is recomended to initialize it once before any user interface come to screen like in game splash screen.
         /// </summary>
         /// <param name="config"></param>
-        public static async Task InitializeAsync(SetupConfiguration config)
+        public static async Task Initialize(SetupConfiguration config)
         {
             Config = config;
 
@@ -38,7 +38,7 @@ namespace SharpGodotFirebase
             
             DataPersister.Build().Load();
             
-            await Authentication.InitializeAsync(HttpRequest);
+            await Authentication.Initialize(HttpRequest);
             RealtimeDb.Initialize(HttpRequest);
             Analytic.Initialize(HttpRequest);
             RemoteConfig.Initialize(HttpRequest);
@@ -159,10 +159,10 @@ namespace SharpGodotFirebase
         /// and return new refresh token when it is already expired. Although FirebaseUser already contains IdToken, it is recomended to call this method to automatically get the newly refresh one.
         /// </summary>
         /// <returns>Firebase Id Token</returns>
-        public static string GetIdToken()
+        public async static Task<string> GetIdToken()
         {
             EnsureInit();
-            return new Authentication().GetIdToken();
+            return await new Authentication().GetIdToken();
         }
 
         /// <summary>
@@ -193,11 +193,17 @@ namespace SharpGodotFirebase
         /// <param name="providerId">Firebase provider id, currently it only support "google.com"</param>
         /// <param name="successUrl">Url redirect browsed when OAuth process already completed. You should provide your own Url.</param>
         /// <returns></returns>
-        public static async Task<AuthResult> SigninOAuth(string providerId = ProviderId.GOOGLE, string successUrl = "https://detanaputra.github.io/sharpgodotfirebase/")
+        public static async Task<AuthResult> SigninOAuthLocalhost(string providerId = ProviderId.GOOGLE, string successUrl = "https://detanaputra.github.io/sharpgodotfirebase/")
         {
             EnsureInit();
-            return await new Authentication().SigninOAuth(providerId, successUrl);
+            return await new Authentication().SigninOAuthLocalhost(providerId, successUrl);
         }
+
+        /*public static async Task<AuthResult> SigninOAuthCloudFunctions(string providerId = ProviderId.GOOGLE, string successUrl = "https://detanaputra.github.io/sharpgodotfirebase/")
+        {
+            EnsureInit();
+            return await new Authentication().SigninOAuthCloudFunction(providerId, successUrl);
+        }*/
 
         /// <summary>
         /// Method for linking account to OAuth signin process. Currently support account only. Usually it is used to link user anonymous account to OAuth account.
@@ -206,10 +212,16 @@ namespace SharpGodotFirebase
         /// <param name="providerId">Firebase provider id, currently it only support "google.com"</param>
         /// <param name="successUrl">Url redirect browsed when OAuth process already completed. You should provide your own Url.</param>
         /// <returns></returns>
-        public static async Task<AuthResult> LinkAccountWithOAuth(FirebaseUser user, string providerId = ProviderId.GOOGLE, string successUrl = "https://detanaputra.github.io/sharpgodotfirebase/")
+        public static async Task<AuthResult> LinkAccountWithOAuth(string providerId = ProviderId.GOOGLE, string successUrl = "https://detanaputra.github.io/sharpgodotfirebase/")
         {
             EnsureInit();
-            return await new Authentication().LinkAccountWithOAuth(user, providerId, successUrl);
+            return await new Authentication().LinkAccountWithOAuth(providerId, successUrl);
+        }
+
+        public static async Task<AuthResult> LinkAccountWithEmail(string email, string password)
+        {
+            EnsureInit();
+            return await new Authentication().LinkAccountWithEmail(email, password);
         }
 
         /// <summary>

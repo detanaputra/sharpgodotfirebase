@@ -95,7 +95,7 @@ namespace SharpGodotFirebase.Utilities
                 }
                 Logger.LogErr(string.Format("The value of {0} is not string.", key));
             }
-            Logger.LogErr("Can not retrieve the value of ", key, ". If you never invoke any signin before, then it's Okay.");
+            Logger.Log("Can not retrieve the value of ", key, " from data cache.");
             return default;
         }
 

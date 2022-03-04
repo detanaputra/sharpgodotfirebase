@@ -2,6 +2,7 @@
 
 namespace SharpGodotFirebase.Realtime
 {
+    [System.Obsolete("Do not use this class", true)]
     public class PostResult<T>
     {
         [JsonProperty("name")]

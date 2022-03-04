@@ -35,7 +35,7 @@ namespace SharpGodotFirebase.RemoteConfigs
             return remoteConfigResult;
         }
 
-        protected override Task<IRequestResult> SendRequest(HTTPRequest httpRequest, string address, string content = "", string[] customHeader = null, HTTPClient.Method method = HTTPClient.Method.Post)
+        protected override async Task<IRequestResult> SendRequest(HTTPRequest httpRequest, string address, string content = "", string[] customHeader = null, HTTPClient.Method method = HTTPClient.Method.Post)
         {
             string[] header = customHeader;
             if (header == null)
@@ -46,10 +46,10 @@ namespace SharpGodotFirebase.RemoteConfigs
                     "[auth bearer placeholder]"
                 };
             }
-            string idToken = FirebaseClient.GetIdToken();
+            string idToken = await FirebaseClient.GetIdToken();
             header[1] = string.Format("Authorization: Bearer {0}", idToken);
 
-            return base.SendRequest(httpRequest, address, content, header, method);
+            return await base.SendRequest(httpRequest, address, content, header, method);
         }
     }
 }

@@ -43,7 +43,7 @@ namespace SharpGodotFirebase.Authentications
         private enum OAuthAction { Signin, Link, Unlink }
         private static OAuthAction currentOAuthAction = OAuthAction.Signin;
 
-        internal static async Task InitializeAsync(HTTPRequest hTTPRequest)
+        internal static async Task Initialize(HTTPRequest hTTPRequest)
         {
             httpRequest = hTTPRequest;
 
@@ -97,11 +97,7 @@ namespace SharpGodotFirebase.Authentications
             if (authResult.EnsureSuccess())
             {
                 Logger.Log("Signup with email and password success");
-                User = JsonConvert.DeserializeObject<FirebaseUser>(authResult.Body);
-                authResult.User = User;
-                long expiresAt = IdTokenManager.GetExpiresAt(User.ExpiresIn);
-                DataPersister.Build().AddData(IdTokenManager.FirebaseUserIdTokenExpiresAt, expiresAt)
-                    .AddDataAndSave(nameof(FirebaseUser), User);
+                return DeserializeAndPersistUser(authResult);
             }
             else
             {
@@ -285,11 +281,7 @@ namespace SharpGodotFirebase.Authentications
             if (authResult.EnsureSuccess())
             {
                 Logger.Log("User data received");
-                User = JsonConvert.DeserializeObject<FirebaseUser>(authResult.Body);
-                authResult.User = User;
-                long expiresAt = IdTokenManager.GetExpiresAt(User.ExpiresIn);
-                DataPersister.Build().AddData(IdTokenManager.FirebaseUserIdTokenExpiresAt, expiresAt)
-                    .AddDataAndSave(nameof(FirebaseUser), User);
+                return DeserializeAndPersistUser(authResult);
             }
             else
             {
@@ -319,11 +311,7 @@ namespace SharpGodotFirebase.Authentications
             if (authResult.EnsureSuccess())
             {
                 Logger.Log("User data received");
-                User = JsonConvert.DeserializeObject<FirebaseUser>(authResult.Body);
-                authResult.User = User;
-                long expiresAt = IdTokenManager.GetExpiresAt(User.ExpiresIn);
-                DataPersister.Build().AddData(IdTokenManager.FirebaseUserIdTokenExpiresAt, expiresAt)
-                    .AddDataAndSave(nameof(FirebaseUser), User);
+                return DeserializeAndPersistUser(authResult);
             }
             else
             {
@@ -383,9 +371,9 @@ namespace SharpGodotFirebase.Authentications
             return authResult;
         }
 
-        internal string GetIdToken()
+        internal async Task<string> GetIdToken()
         {
-            LoadCachedFirebaseUserOrRefresh();
+            await LoadCachedFirebaseUserOrRefresh();
             return User.IdToken;
         }
 
@@ -406,11 +394,13 @@ namespace SharpGodotFirebase.Authentications
         internal async Task<bool> Signout()
         {
             User = null;
-            DataPersister.Build().RemoveDataAndSave(nameof(FirebaseUser)); 
+            DataPersister.Build()
+                .RemoveData(IdTokenManager.FirebaseUserIdTokenExpiresAt)
+                .RemoveDataAndSave(nameof(FirebaseUser));
             return await Task.FromResult<bool>(true);
         }
 
-        internal async Task<AuthResult> SigninOAuth(string _providerId, string successUrl)
+        internal async Task<AuthResult> SigninOAuthLocalhost(string _providerId, string successUrl)
         {
             currentOAuthAction = OAuthAction.Signin;
             OpenOAuthPage(_providerId, "http://127.0.0.1:[PORT]/", 4195);
@@ -428,9 +418,34 @@ namespace SharpGodotFirebase.Authentications
             };
         }
 
-        internal async Task<AuthResult> LinkAccountWithOAuth(FirebaseUser user, string providerId, string successUrl)
+        [Obsolete("", true)]
+        internal async Task<AuthResult> SigninOAuthCloudFunction(string _providerId, string successUrl)
         {
-            User = user;
+            currentOAuthAction = OAuthAction.Signin;
+
+            // TODO
+            // create new post to rtbd, save the name under OAuthKeyHandler/[new_post_id] and hold the id value in a new variable
+            // open cloud functions sending the new post id
+            // here is what cloud functions do:
+            // 
+
+            object[] signalResult = await ToSignal(authenticationNode, nameof(OAuthProcessComplete));
+            OS.ShellOpen(successUrl);
+            if (signalResult[0] is AuthResultSignalWrapper s)
+            {
+                return s.AuthResult;
+            }
+            return new AuthResult()
+            {
+                Result = 4,
+                ResponseCode = -1,
+                AuthError = AuthError.GenerateError(4)
+            };
+        }
+
+        internal async Task<AuthResult> LinkAccountWithOAuth(string providerId, string successUrl)
+        {
+            await LoadCachedFirebaseUserOrRefresh(); // make sure idToken is fresh.
             currentOAuthAction = OAuthAction.Link;
             OpenOAuthPage(providerId, "http://127.0.0.1:[PORT]/", 4195);
             object[] signalResult = await ToSignal(authenticationNode, nameof(OAuthProcessComplete));
@@ -445,6 +460,40 @@ namespace SharpGodotFirebase.Authentications
                 ResponseCode = -1,
                 AuthError = AuthError.GenerateError(4)
             };
+        }
+
+        internal async Task<AuthResult> LinkAccountWithEmail(string email, string password)
+        {
+            await LoadCachedFirebaseUserOrRefresh(); // make sure idToken is fresh.
+            string address = UrlBuilder.GetLinkUserWithEmailUrl();
+            var body = new
+            {
+                idToken = User.IdToken,
+                email,
+                password,
+                returnSecureToken = true
+            };
+            string content = JsonConvert.SerializeObject(body);
+            IRequestResult requestResult = await SendRequest(httpRequest, address, content);
+            AuthResult authResult = new AuthResult(requestResult);
+            if (authResult.EnsureSuccess())
+            {
+                return DeserializeAndPersistUser(authResult);
+            }
+            else
+            {
+                if (string.IsNullOrEmpty(authResult.Body))
+                {
+                    authResult.AuthError = AuthError.GenerateError();
+                }
+                else
+                {
+                    authResult.AuthError = JsonConvert.DeserializeObject<AuthError>(authResult.Body);
+                }
+                Logger.LogErr("Link email ", authResult.AuthError.Error.Message);
+            }
+            return authResult;
+
         }
 
         protected override Task<IRequestResult> SendRequest(HTTPRequest httpRequest, string address, string content = "", string[] header = null, HTTPClient.Method method = HTTPClient.Method.Post)
@@ -479,10 +528,10 @@ namespace SharpGodotFirebase.Authentications
                 return;
             }
             urlEndpoint = urlEndpoint.Replace("[CLIENT_ID]&", FirebaseClient.Config.ClientId);
-
-            OS.ShellOpen(urlEndpoint);
             TCPTimerNode.Start();
             _ = TCPServer.Listen(_listenToPort, "*");
+
+            OS.ShellOpen(urlEndpoint);
         }
 
         private void OnTCPTimerTimeout()
@@ -575,6 +624,17 @@ namespace SharpGodotFirebase.Authentications
             {
                 User = user;
             }
+        }
+
+        private static AuthResult DeserializeAndPersistUser(AuthResult authResult)
+        {
+            User = JsonConvert.DeserializeObject<FirebaseUser>(authResult.Body);
+            authResult.User = User;
+            long expiresAt = IdTokenManager.GetExpiresAt(User.ExpiresIn);
+            DataPersister.Build()
+                .AddData(IdTokenManager.FirebaseUserIdTokenExpiresAt, expiresAt)
+                .AddDataAndSave(nameof(FirebaseUser), User);
+            return authResult;
         }
     }
 }
