@@ -24,7 +24,7 @@ namespace SharpGodotFirebase
                     ResponseCode = -1,
                 };
             }
-            object[] signalResult = await ToSignal(httpRequest, SignalString.RequestCompleted);
+            object[] signalResult = await ToSignal(httpRequest, SignalStringProvider.GodotSignal.RequestCompleted);
 
             return new RequestResult()
             {

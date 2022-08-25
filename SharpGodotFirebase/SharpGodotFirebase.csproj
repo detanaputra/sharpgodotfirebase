@@ -14,7 +14,7 @@
 
   <ItemGroup>
     <Reference Include="GodotSharp">
-      <HintPath>..\..\GodotMono\3.4.2\.mono\assemblies\Debug\GodotSharp.dll</HintPath>
+      <HintPath>..\..\..\..\..\Godot\Godot_v3.4.3-stable_mono_win64\GodotSharp\Api\Debug\GodotSharp.dll</HintPath>
     </Reference>
   </ItemGroup>
 

@@ -28,9 +28,20 @@ namespace SharpGodotFirebase.Analytics
         {
             string appInstanceId = "232de7e2791ea7b7302d3654ec103075";
             string address = UrlBuilder.GetAnalyticUrlMP4();
+            
+            if(FirebaseClient.User == null)
+            {
+                return new RequestResult()
+                {
+                    Result = -1,
+                    ResponseCode = -1,
+                    Body = "Can not send event. Reason: User is signed out."
+                };
+            }
+
             var body = new
             {
-                app_instance_id = appInstanceId, // TODO instance id??
+                app_instance_id = appInstanceId,
                 user_id = FirebaseClient.User.LocalId,
                 events
             };
@@ -43,9 +54,18 @@ namespace SharpGodotFirebase.Analytics
         {
             string appInstanceId = "232de7e2791ea7b7302d3654ec103075";
             string address = UrlBuilder.GetDebugAnalyticUrlMP4();
+            if (FirebaseClient.User == null)
+            {
+                return new RequestResult()
+                {
+                    Result = -1,
+                    ResponseCode = -1,
+                    Body = "Can not send event. Reason: User is signed out."
+                };
+            }
             var body = new
             {
-                app_instance_id = appInstanceId,  // TODO instance id??
+                app_instance_id = appInstanceId,
                 user_id = FirebaseClient.User.LocalId,
                 events
             };

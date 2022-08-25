@@ -59,7 +59,7 @@ namespace SharpGodotFirebase.Authentications
                 Name = "AuthTCPTimer"
             };
             authenticationNode.AddChild(TCPTimerNode);
-            TCPTimerNode.Connect(SignalString.Timeout, authenticationNode, nameof(OnTCPTimerTimeout));
+            TCPTimerNode.Connect(SignalStringProvider.GodotSignal.Timeout, authenticationNode, nameof(OnTCPTimerTimeout));
 
             await LoadCachedFirebaseUserOrRefresh();
         }
@@ -423,7 +423,7 @@ namespace SharpGodotFirebase.Authentications
         {
             currentOAuthAction = OAuthAction.Signin;
 
-            // TODO
+            // 
             // create new post to rtbd, save the name under OAuthKeyHandler/[new_post_id] and hold the id value in a new variable
             // open cloud functions sending the new post id
             // here is what cloud functions do:
