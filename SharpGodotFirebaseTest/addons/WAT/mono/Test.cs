@@ -21,7 +21,7 @@ namespace WAT
 		private IEnumerable<Executable> _methods = null;
 		private Object _case = null;
 		private static GDScript TestCase { get; } = GD.Load<GDScript>("res://addons/WAT/test/case.gd");
-		private Reference _watcher { get; set; }
+		private RefCounted _watcher { get; set; }
 		protected Timer Yielder { get; private set; }
 		protected Assertions Assert { get; private set; }
 		protected Type _type;
@@ -32,12 +32,12 @@ namespace WAT
 		public override void _Ready()
 		{
 		
-			_watcher = (Reference) GD.Load<GDScript>("res://addons/WAT/test/watcher.gd").New();
+			_watcher = (RefCounted) GD.Load<GDScript>("res://addons/WAT/test/watcher.gd").New();
 			Yielder = (Timer) GD.Load<GDScript>("res://addons/WAT/test/yielder.gd").New();
 			Assert = new Assertions();
-			Assert.Connect(nameof(Assertions.asserted), _case, "_on_asserted");
-			Assert.Connect(nameof(Assertions.asserted), this, nameof(OnAssertion));
-			Connect(nameof(described), _case, "_on_test_method_described");
+			Assert.Connect(nameof(Assertions.asserted), new Callable(_case, "_on_asserted"));
+			Assert.Connect(nameof(Assertions.asserted), new Callable(this, nameof(OnAssertion)));
+			Connect(nameof(described), new Callable(_case, "_on_test_method_described"));
 			AddChild(Yielder);
 			CallDeferred(nameof(Run));
 		}

@@ -5,7 +5,7 @@ using Godot.Collections;
 
 namespace WAT
 {
-	public class Null : Assertion
+	public partial class Null : Assertion
 	{
 		// Godot Objects that are freed don't become null immediatly
 		// so they may still be valid instances

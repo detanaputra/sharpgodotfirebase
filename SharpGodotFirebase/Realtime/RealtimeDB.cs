@@ -13,7 +13,7 @@ namespace SharpGodotFirebase.Realtime
     {
         private static RealtimeDb realtimeDbNode;
 
-        internal static void Initialize(HTTPRequest hTTPRequest)
+        internal static void Initialize(HttpRequest hTTPRequest)
         {
             HttpRequest = hTTPRequest;
             realtimeDbNode = new RealtimeDb() { Name = "RealtimeDb" };
@@ -23,7 +23,7 @@ namespace SharpGodotFirebase.Realtime
         internal async Task<RealtimeResult<T>> GetDocument<T>(ChildQuery childQuery, string database = "default")
         {
             string address = UrlBuilder.GetRealtimeUrl(childQuery.Path, database);
-            IRequestResult requestResult = await SendRequest(HttpRequest, address, "", null, HTTPClient.Method.Get);
+            IRequestResult requestResult = await SendRequest(HttpRequest, address, "", null, HttpClient.Method.Get);
             RealtimeResult<T> realtimeResult = new RealtimeResult<T>(requestResult);
             if (realtimeResult.EnsureSuccess())
             {
@@ -43,7 +43,7 @@ namespace SharpGodotFirebase.Realtime
         internal async Task<RealtimeResult<T>> GetCollection<T>(ChildQuery childQuery, string database = "default")
         {
             string address = UrlBuilder.GetRealtimeUrl(childQuery.Path, database);
-            IRequestResult requestResult = await SendRequest(HttpRequest, address, "", null, HTTPClient.Method.Get);
+            IRequestResult requestResult = await SendRequest(HttpRequest, address, "", null, HttpClient.Method.Get);
             RealtimeResult<T> realtimeResult = new RealtimeResult<T>(requestResult);
             if (realtimeResult.EnsureSuccess())
             {
@@ -64,7 +64,7 @@ namespace SharpGodotFirebase.Realtime
         {
             string address = UrlBuilder.GetRealtimeUrl(childQuery.Path, database);
             string content = JsonConvert.SerializeObject(data);
-            IRequestResult requestResult = await SendRequest(HttpRequest, address, content, null, HTTPClient.Method.Put);
+            IRequestResult requestResult = await SendRequest(HttpRequest, address, content, null, HttpClient.Method.Put);
             RealtimeResult<T> realtimeResult = new RealtimeResult<T>(requestResult);
             if (realtimeResult.EnsureSuccess())
             {
@@ -82,7 +82,7 @@ namespace SharpGodotFirebase.Realtime
         {
             string address = UrlBuilder.GetRealtimeUrl(childQuery.Path, database);
             string content = JsonConvert.SerializeObject(data);
-            IRequestResult requestResult = await SendRequest(HttpRequest, address, content, null, HTTPClient.Method.Post);
+            IRequestResult requestResult = await SendRequest(HttpRequest, address, content, null, HttpClient.Method.Post);
             RealtimeResult<T> realtimeResult = new RealtimeResult<T>(requestResult);
             if (realtimeResult.EnsureSuccess())
             {
@@ -102,7 +102,7 @@ namespace SharpGodotFirebase.Realtime
         {
             string address = UrlBuilder.GetRealtimeUrl(childQuery.Path, database);
             string content = JsonConvert.SerializeObject(data);
-            IRequestResult requestResult = await SendRequest(HttpRequest, address, content, null, HTTPClient.Method.Patch);
+            IRequestResult requestResult = await SendRequest(HttpRequest, address, content, null, HttpClient.Method.Patch);
             RealtimeResult<Dictionary<string, object>> realtimeResult = new RealtimeResult<Dictionary<string, object>>(requestResult);
             if (realtimeResult.EnsureSuccess())
             {
@@ -118,7 +118,7 @@ namespace SharpGodotFirebase.Realtime
         internal async Task<RealtimeResult> DeleteDocument(ChildQuery childQuery, string database = "default")
         {
             string address = UrlBuilder.GetRealtimeUrl(childQuery.Path, database);
-            IRequestResult requestResult = await SendRequest(HttpRequest, address, "", null, HTTPClient.Method.Delete);
+            IRequestResult requestResult = await SendRequest(HttpRequest, address, "", null, HttpClient.Method.Delete);
             RealtimeResult realtimeResult = new RealtimeResult(requestResult);
             if (realtimeResult.EnsureSuccess())
             {

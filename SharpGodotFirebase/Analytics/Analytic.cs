@@ -12,7 +12,7 @@ namespace SharpGodotFirebase.Analytics
     {
         private static Analytic analyticNode;
 
-        internal static void Initialize(HTTPRequest hTTPRequest)
+        internal static void Initialize(HttpRequest hTTPRequest)
         {
             HttpRequest = hTTPRequest;
             analyticNode = new Analytic() { Name = "Analytic" };
@@ -74,7 +74,7 @@ namespace SharpGodotFirebase.Analytics
             return requestResult;
         }
 
-        protected override Task<IRequestResult> SendRequest(HTTPRequest httpRequest, string address, string content = "", string[] customHeader = null, HTTPClient.Method method = HTTPClient.Method.Post)
+        protected override Task<IRequestResult> SendRequest(HttpRequest httpRequest, string address, string content = "", string[] customHeader = null, HttpClient.Method method = HttpClient.Method.Post)
         {
             string[] header = customHeader;
             if (header == null)

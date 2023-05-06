@@ -51,7 +51,7 @@ static func ends_with(value: String, string: String, context: String) -> Diction
 static func is_empty(value: String, context: String) -> Dictionary:
 	var passed: String = "String is empty"
 	var failed: String = "String %s is not empty" % [value]
-	var success = value.empty()
+	var success = value.is_empty()
 	var expected = passed
 	var result = passed if success else failed
 	return _result(success, expected, result, context)

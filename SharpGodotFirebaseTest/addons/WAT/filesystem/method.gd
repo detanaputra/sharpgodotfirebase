@@ -1,8 +1,8 @@
-extends Reference
+extends RefCounted
 
 var path: String
-var dir: String setget ,_get_path
-var name: String setget ,_get_sanitized_name
+var dir: String: get = _get_path
+var name: String: get = _get_sanitized_name
 
 func _init(method_path: String = "", method_name: String = ""):
 	path = method_path

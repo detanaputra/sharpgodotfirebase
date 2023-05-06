@@ -1,4 +1,4 @@
-extends Reference
+extends RefCounted
 
 # I hate this
 # Used for do not care values in stubs

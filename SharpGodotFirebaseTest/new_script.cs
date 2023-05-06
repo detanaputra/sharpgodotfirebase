@@ -3,7 +3,7 @@ using System;
 
 using WAT;
 
-public class new_script : Test
+public partial class new_script : Test
 {
     [Test]
     public void TestHehe()

@@ -59,7 +59,7 @@ static func o_is_blocking_signals(obj, context: String) -> Dictionary:
 static func o_is_connected(sender: Object, _signal: String, receiver: Object, method: String, context: String) -> Dictionary:
 	var passed: String = "%s.%s is connected to %s.%s" % [sender, _signal, receiver, method]
 	var failed: String = "%s.%s is not connected to %s.%s" % [sender, _signal, receiver, method]
-	var success = sender.is_connected(_signal, receiver, method)
+	var success = sender.is_connected(_signal, Callable(receiver, method))
 	var expected = passed
 	var result = passed if success else failed
 	return _result(success, expected, result, context)
@@ -83,7 +83,7 @@ static func o_is_not_blocking_signals(obj, context: String) -> Dictionary:
 static func o_is_not_connected(sender: Object, _signal: String, receiver: Object, method: String, context: String) -> Dictionary:
 	var passed: String = "%s.%s is not connected to %s.%s" % [sender, _signal, receiver, method]
 	var failed: String = "%s.%s is connected to %s.%s" % [sender, _signal, receiver, method]
-	var success = not sender.is_connected(_signal, receiver, method)
+	var success = not sender.is_connected(_signal, Callable(receiver, method))
 	var expected = passed
 	var result = passed if success else failed
 	return _result(success, expected, result, context)

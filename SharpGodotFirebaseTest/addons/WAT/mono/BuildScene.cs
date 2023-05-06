@@ -1,7 +1,7 @@
 using Godot;
 using System;
 
-public class BuildScene : Node
+public partial class BuildScene : Node
 {
 	public override void _Ready() 
 	{ 

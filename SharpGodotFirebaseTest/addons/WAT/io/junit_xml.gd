@@ -1,14 +1,14 @@
 extends Script
 
-static func write(results, settings: Reference, time: float = 0.0) -> void:
+static func write(results, settings: RefCounted, time: float = 0.0) -> void:
 	var path: String
 	if not settings.results_directory():
 		push_warning("WAT: Cannot find results directory. Defaulting to root to write Junit XML")
 		path = "res://"
 	else:
 		path = settings.results_directory()
-	if not Directory.new().dir_exists(path):
-		Directory.new().make_dir_recursive(path)
+	if not DirAccess.new().dir_exists(path):
+		DirAccess.new().make_dir_recursive(path)
 	var tests: int = results.size()
 	var failures: int = 0
 	for i in results:
@@ -19,7 +19,7 @@ static func write(results, settings: Reference, time: float = 0.0) -> void:
 	output += '\n<testsuites failures="%s" name="TestXML" tests="%s" time="%s">' % [failures, tests, time]
 	for result in results:
 		output += '\n\t<testsuite name="%s" failures="%s"  tests="%s" time="%s">' % [result.context, result.total - result.passed, result.total, result.time_taken]
-		if result.methods.empty():
+		if result.methods.is_empty():
 			output += '\n\t\t<testcase name="Not Found" time="0">'
 			output += '<failure message="No Tests Found On Suite %s"></failure>' % result.path
 			output += "</testcase>"

@@ -1,21 +1,17 @@
-<Project Sdk="Microsoft.NET.Sdk">
+﻿<Project Sdk="Microsoft.NET.Sdk">
 
   <PropertyGroup>
-    <TargetFramework>netstandard2.0</TargetFramework>
+    <TargetFramework>net6.0</TargetFramework>
+    <!--<TargetFrameworks>net6.0;netstandard2.0</TargetFrameworks>-->
   </PropertyGroup>
 
   <ItemGroup>
-    <PackageReference Include="Newtonsoft.Json" Version="13.0.1" />
+    <PackageReference Include="GodotSharp" Version="4.0.2" />
+    <PackageReference Include="Newtonsoft.Json" Version="13.0.3" />
   </ItemGroup>
 
   <ItemGroup>
     <ProjectReference Include="..\..\GodotSignalStringProvider\GodotSignalStringProvider\SignalStringProvider.csproj" />
-  </ItemGroup>
-
-  <ItemGroup>
-    <Reference Include="GodotSharp">
-      <HintPath>..\..\..\..\..\Godot\Godot_v3.4.3-stable_mono_win64\GodotSharp\Api\Debug\GodotSharp.dll</HintPath>
-    </Reference>
   </ItemGroup>
 
 </Project>

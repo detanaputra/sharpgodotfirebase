@@ -4,6 +4,7 @@ using Newtonsoft.Json;
 
 using System.Collections.Generic;
 
+
 namespace SharpGodotFirebase.Utilities
 {
     internal class DataPersister
@@ -48,15 +49,14 @@ namespace SharpGodotFirebase.Utilities
 
         internal DataPersister Save()
         {
-            File file = new File();
-            if (!file.FileExists(filePath))
+            if (!FileAccess.FileExists(filePath))
             {
                 InitiateFirstData();
             }
-            file.Open(filePath, File.ModeFlags.Write);
-            file.StoreString(JsonConvert.SerializeObject(PersistedData));
+            using FileAccess fileAccess = FileAccess.Open(filePath, FileAccess.ModeFlags.Read);
+            fileAccess.StoreString(JsonConvert.SerializeObject(PersistedData));
             //file.StorePascalString(JsonConvert.SerializeObject(PersistedData));
-            file.Close();
+            fileAccess.Close();
             return this;
         }
 
@@ -72,15 +72,14 @@ namespace SharpGodotFirebase.Utilities
 
         internal DataPersister Load()
         {
-            File file = new File();
-            if (!file.FileExists(filePath))
+            if (!FileAccess.FileExists(filePath))
             {
                 InitiateFirstData();
             }
-            file.Open(filePath, File.ModeFlags.Read);
-            Dictionary<string, string> data = JsonConvert.DeserializeObject<Dictionary<string, string>>(file.GetAsText());
+            using FileAccess fileAccess = FileAccess.Open(filePath, FileAccess.ModeFlags.Read);
+            Dictionary<string, string> data = JsonConvert.DeserializeObject<Dictionary<string, string>>(fileAccess.GetAsText());
             //Dictionary<string, string> data = JsonConvert.DeserializeObject<Dictionary<string, string>>(file.GetPascalString());
-            file.Close();
+            fileAccess.Close();
             PersistedData = data;
             return this;
         }
@@ -123,15 +122,15 @@ namespace SharpGodotFirebase.Utilities
 
         private void InitiateFirstData()
         {
-            Directory directory = new Directory();
-            if (!directory.DirExists(folderPath))
+            using DirAccess dirAccess = DirAccess.Open(folderPath);
+            if (!dirAccess.DirExists(folderPath))
             {
-                directory.MakeDir(folderPath);
+                dirAccess.MakeDir(folderPath);
             }
-            File file = new File();
-            file.Open(filePath, File.ModeFlags.Write);
-            file.StoreString(JsonConvert.SerializeObject(PersistedData));
-            file.Close();
+
+            using FileAccess fileAccess = FileAccess.Open(filePath, FileAccess.ModeFlags.Write);
+            fileAccess.StoreString(JsonConvert.SerializeObject(PersistedData));
+            fileAccess.Close();
         }
     }
 }

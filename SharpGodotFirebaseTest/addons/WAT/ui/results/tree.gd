@@ -1,4 +1,4 @@
-tool
+@tool
 extends Tree
 
 const ScriptTreeItem: GDScript = preload("res://addons/WAT/ui/results/script.gd")
@@ -9,14 +9,14 @@ var tests = []
 var root: TreeItem
 var scripts: Dictionary = {}
 var current_method: MethodTreeItem
-var icons: Reference
+var icons: RefCounted
 var failed: bool = false
 var goto_function: FuncRef
 
-func _init(_icons: Reference) -> void:
+func _init(_icons: RefCounted) -> void:
 	icons = _icons
 	if Engine.is_editor_hint():
-		connect("button_pressed", self, "_on_button_pressed")
+		connect("button_pressed", Callable(self, "_on_button_pressed"))
 	
 func _on_button_pressed(item: TreeItem, col: int = 0, id: int = 0) -> void:
 	var data: MethodTreeItem = item.get_meta("data")
@@ -26,7 +26,7 @@ func _ready() -> void:
 	visible = false
 	hide_root = true
 	root = create_item()
-	add_constant_override("Scroll Speed", 24)
+	add_theme_constant_override("Scroll Speed", 24)
 	
 const PASSED: Color = Color(0.34375, 1, 0.34375)
 const FAILED: Color = Color(1, 0.425781, 0.425781)

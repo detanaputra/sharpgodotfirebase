@@ -1,11 +1,11 @@
-tool
+@tool
 extends TabContainer
 
 const Tab: GDScript = preload("res://addons/WAT/ui/results/tab.gd")
 const ResultTree: GDScript = preload("res://addons/WAT/ui/results/tree.gd")
-var tabs: Dictionary = {} # of Tabs
+var tabs: Dictionary = {} # of TabBar
 var idx: int = 0
-var icons: Reference
+var icons: RefCounted
 var goto_function: FuncRef
 
 func clear() -> void:

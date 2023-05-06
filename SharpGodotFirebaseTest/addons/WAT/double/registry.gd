@@ -17,7 +17,7 @@ func method(instance_id: int, method: String) -> Object:
 	
 func clear() -> void:
 	var directors = test_directors.values()
-	while not directors.empty():
+	while not directors.is_empty():
 		var director = directors.pop_back()
 		director.clear()
 

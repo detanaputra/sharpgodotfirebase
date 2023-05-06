@@ -1,9 +1,9 @@
-﻿using System.Reflection;
+using System.Reflection;
 using Godot.Collections;
 
 namespace WAT
 {
-    public class Property: Assertion
+    public partial class Property: Assertion
     {
         public static Dictionary Contains<T>(object value, T container, string context)
         {

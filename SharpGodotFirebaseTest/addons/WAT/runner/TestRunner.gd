@@ -1,4 +1,4 @@
-tool
+@tool
 extends Node
 
 const Settings: GDScript = preload("res://addons/WAT/settings.gd")
@@ -9,9 +9,9 @@ signal completed
 func _ready() -> void:
 	name = "TestRunner"
 	if not Engine.is_editor_hint():
-		OS.window_size = Settings.window_size()
+		get_window().size = Settings.window_size()
 		if Settings.minimize_window_when_running_tests():
-			OS.window_minimized = true
+			get_window().mode = Window.MODE_MINIMIZED if (true) else Window.MODE_WINDOWED
 
 func run(tests: Array, repeat: int, threads: int, results_view: Node = null) -> Array:
 	var results: Array = []
@@ -20,16 +20,16 @@ func run(tests: Array, repeat: int, threads: int, results_view: Node = null) -> 
 	for thread in testthreads:
 		thread.controller.results = results_view
 		add_child(thread.controller)
-		thread.start(self, "_run", thread)
+		thread.start(Callable(self, "_run").bind(thread))
 		thread.wait_to_finish()
 	for count in testthreads:
-		results += yield(self, COMPLETED)
+		results += await self.COMPLETED
 	return results
 
 func _run(thread: Thread) -> void:
 	var results: Array = []
 	for test in thread.tests:
-		results.append(yield(thread.controller.run(test), COMPLETED))
+		results.append(await thread.controller.run(test).COMPLETED)
 	thread.controller.queue_free()
 	emit_signal(COMPLETED, results)
 

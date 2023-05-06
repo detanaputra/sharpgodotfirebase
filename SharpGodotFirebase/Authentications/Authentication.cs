@@ -36,14 +36,14 @@ namespace SharpGodotFirebase.Authentications
         internal static FirebaseUser User;
 
         private static Authentication authenticationNode;
-        private static TCP_Server TCPServer;
+        private static TcpServer TCPServer;
         private static Timer TCPTimerNode;
-        private static HTTPRequest httpRequest;
+        private static HttpRequest httpRequest;
 
         private enum OAuthAction { Signin, Link, Unlink }
         private static OAuthAction currentOAuthAction = OAuthAction.Signin;
 
-        internal static async Task Initialize(HTTPRequest hTTPRequest)
+        internal static async Task Initialize(HttpRequest hTTPRequest)
         {
             httpRequest = hTTPRequest;
 
@@ -53,13 +53,13 @@ namespace SharpGodotFirebase.Authentications
             };
             FirebaseClient.Config.ParentNode.AddChild(authenticationNode);
 
-            TCPServer = new TCP_Server();
+            TCPServer = new TcpServer();
             TCPTimerNode = new Timer
             {
                 Name = "AuthTCPTimer"
             };
             authenticationNode.AddChild(TCPTimerNode);
-            TCPTimerNode.Connect(SignalStringProvider.GodotSignal.Timeout, authenticationNode, nameof(OnTCPTimerTimeout));
+            TCPTimerNode.Timeout += authenticationNode.OnTCPTimerTimeout;
 
             await LoadCachedFirebaseUserOrRefresh();
         }
@@ -87,8 +87,8 @@ namespace SharpGodotFirebase.Authentications
             string address = UrlBuilder.GetSignupWithEmailAndPasswordUrl();
             var body = new
             {
-                email = email,
-                password = password,
+                email,
+                password,
                 returnSecureToken = true
             };
             string content = JsonConvert.SerializeObject(body);
@@ -120,7 +120,7 @@ namespace SharpGodotFirebase.Authentications
             var body = new
             {
                 requestType = "VERIFY_EMAIL",
-                idToken = idToken
+                idToken
             };
             string content = JsonConvert.SerializeObject(body);
             string[] header = new string[3]
@@ -174,7 +174,7 @@ namespace SharpGodotFirebase.Authentications
             var body = new
             {
                 requestType = "PASSWORD_RESET",
-                email = email
+                email
             };
             string[] header = new string[3]
             {
@@ -404,11 +404,15 @@ namespace SharpGodotFirebase.Authentications
         {
             currentOAuthAction = OAuthAction.Signin;
             OpenOAuthPage(_providerId, "http://127.0.0.1:[PORT]/", 4195);
-            object[] signalResult = await ToSignal(authenticationNode, nameof(OAuthProcessComplete));
+            Variant[] signalResult = await ToSignal(authenticationNode, nameof(OAuthProcessComplete));
             OS.ShellOpen(successUrl);
-            if (signalResult[0] is AuthResultSignalWrapper s)
+            if (signalResult[0].VariantType is Variant.Type.Object)
             {
-                return s.AuthResult;
+                GodotObject res = (GodotObject)signalResult[0];
+                if (res is AuthResultSignalWrapper s)
+                {
+                    return s.AuthResult;
+                }
             }
             return new AuthResult()
             {
@@ -429,11 +433,15 @@ namespace SharpGodotFirebase.Authentications
             // here is what cloud functions do:
             // 
 
-            object[] signalResult = await ToSignal(authenticationNode, nameof(OAuthProcessComplete));
+            Variant[] signalResult = await ToSignal(authenticationNode, nameof(OAuthProcessComplete));
             OS.ShellOpen(successUrl);
-            if (signalResult[0] is AuthResultSignalWrapper s)
+            if (signalResult[0].VariantType is Variant.Type.Object)
             {
-                return s.AuthResult;
+                GodotObject res = (GodotObject)signalResult[0];
+                if (res is AuthResultSignalWrapper s)
+                {
+                    return s.AuthResult;
+                }
             }
             return new AuthResult()
             {
@@ -448,11 +456,15 @@ namespace SharpGodotFirebase.Authentications
             await LoadCachedFirebaseUserOrRefresh(); // make sure idToken is fresh.
             currentOAuthAction = OAuthAction.Link;
             OpenOAuthPage(providerId, "http://127.0.0.1:[PORT]/", 4195);
-            object[] signalResult = await ToSignal(authenticationNode, nameof(OAuthProcessComplete));
+            Variant[] signalResult = await ToSignal(authenticationNode, nameof(OAuthProcessComplete));
             OS.ShellOpen(successUrl);
-            if (signalResult[0] is AuthResultSignalWrapper s)
+            if (signalResult[0].VariantType is Variant.Type.Object)
             {
-                return s.AuthResult;
+                GodotObject res = (GodotObject)signalResult[0];
+                if (res is AuthResultSignalWrapper s)
+                {
+                    return s.AuthResult;
+                }
             }
             return new AuthResult()
             {
@@ -496,7 +508,7 @@ namespace SharpGodotFirebase.Authentications
 
         }
 
-        protected override Task<IRequestResult> SendRequest(HTTPRequest httpRequest, string address, string content = "", string[] header = null, HTTPClient.Method method = HTTPClient.Method.Post)
+        protected override Task<IRequestResult> SendRequest(HttpRequest httpRequest, string address, string content = "", string[] header = null, HttpClient.Method method = HttpClient.Method.Post)
         {
             string[] customHeader = header;
             if (customHeader == null)
@@ -536,13 +548,14 @@ namespace SharpGodotFirebase.Authentications
 
         private void OnTCPTimerTimeout()
         {
-            StreamPeerTCP peer = TCPServer.TakeConnection();
+            StreamPeerTcp peer = TCPServer.TakeConnection();
             if (peer != null)
             {
                 string rawResult = peer.GetUtf8String(100);
-                if (rawResult != "" & rawResult.BeginsWith("GET"))
+                if (rawResult != "" & rawResult.StartsWith("GET"))
                 {
-                    string code = rawResult.Split("=")[1].RStrip("&scope");
+                    char[] toTrim = { '&', 's', 'c', 'o', 'p', 'e' };
+                    string code = rawResult.Split("=")[1].TrimEnd(toTrim);
                     TCPServer.Stop();
                     peer.DisconnectFromHost();
                     TCPTimerNode.Stop();
@@ -553,7 +566,8 @@ namespace SharpGodotFirebase.Authentications
 
         private async void SigninWithOAuth(string signinCode, string requestUri = "urn:ietf:wg:oauth:2.0:oob", string providerId = ProviderId.GOOGLE)
         {
-            string code = signinCode.PercentDecode();
+            //string code = signinCode.PercentDecode();
+            string code = Uri.UnescapeDataString(signinCode);
             AuthResult authResult = await ExchangeGoogleToken(code, requestUri);
 
             if (authResult.EnsureSuccess())

@@ -1,19 +1,19 @@
 [gd_scene load_steps=23 format=2]
 
 [ext_resource path="res://addons/WAT/ui/gui.gd" type="Script" id=1]
-[ext_resource path="res://addons/WAT/assets/play.png" type="Texture" id=2]
+[ext_resource path="res://addons/WAT/assets/play.png" type="Texture2D" id=2]
 [ext_resource path="res://addons/WAT/ui/summary.gd" type="Script" id=3]
 [ext_resource path="res://addons/WAT/ui/links.gd" type="Script" id=4]
 [ext_resource path="res://addons/WAT/ui/scaling/dynamic_size_spinbox.gd" type="Script" id=5]
 [ext_resource path="res://addons/WAT/ui/results/tab_container.gd" type="Script" id=6]
 [ext_resource path="res://addons/WAT/ui/test_menu.gd" type="Script" id=9]
-[ext_resource path="res://addons/WAT/assets/play_debug.png" type="Texture" id=10]
-[ext_resource path="res://addons/WAT/assets/timer.png" type="Texture" id=11]
-[ext_resource path="res://addons/WAT/assets/kofi.png" type="Texture" id=13]
-[ext_resource path="res://addons/WAT/assets/script.png" type="Texture" id=14]
-[ext_resource path="res://addons/WAT/assets/issue.svg" type="Texture" id=16]
-[ext_resource path="res://addons/WAT/assets/failed.png" type="Texture" id=17]
-[ext_resource path="res://addons/WAT/assets/passed.png" type="Texture" id=18]
+[ext_resource path="res://addons/WAT/assets/play_debug.png" type="Texture2D" id=10]
+[ext_resource path="res://addons/WAT/assets/timer.png" type="Texture2D" id=11]
+[ext_resource path="res://addons/WAT/assets/kofi.png" type="Texture2D" id=13]
+[ext_resource path="res://addons/WAT/assets/script.png" type="Texture2D" id=14]
+[ext_resource path="res://addons/WAT/assets/issue.svg" type="Texture2D" id=16]
+[ext_resource path="res://addons/WAT/assets/failed.png" type="Texture2D" id=17]
+[ext_resource path="res://addons/WAT/assets/passed.png" type="Texture2D" id=18]
 [ext_resource path="res://addons/WAT/network/test_server.gd" type="Script" id=19]
 
 [sub_resource type="StyleBoxEmpty" id=1]
@@ -28,7 +28,7 @@
 
 [sub_resource type="InputEventKey" id=6]
 
-[sub_resource type="ShortCut" id=7]
+[sub_resource type="Shortcut" id=7]
 shortcut = SubResource( 6 )
 
 [node name="Tests" type="PanelContainer"]
@@ -42,10 +42,10 @@ __meta__ = {
 }
 
 [node name="Core" type="VBoxContainer" parent="."]
-margin_left = 7.0
-margin_top = 7.0
-margin_right = 1017.0
-margin_bottom = 593.0
+offset_left = 7.0
+offset_top = 7.0
+offset_right = 1017.0
+offset_bottom = 593.0
 size_flags_horizontal = 3
 size_flags_vertical = 3
 __meta__ = {
@@ -53,8 +53,8 @@ __meta__ = {
 }
 
 [node name="Menu" type="HBoxContainer" parent="Core"]
-margin_right = 617.0
-margin_bottom = 24.0
+offset_right = 617.0
+offset_bottom = 24.0
 focus_mode = 2
 size_flags_horizontal = 0
 size_flags_vertical = 0
@@ -63,60 +63,60 @@ __meta__ = {
 }
 
 [node name="RunAll" type="Button" parent="Core/Menu"]
-margin_top = 4.0
-margin_right = 16.0
-margin_bottom = 20.0
-hint_tooltip = "Run All (Non Debug)"
+offset_top = 4.0
+offset_right = 16.0
+offset_bottom = 20.0
+tooltip_text = "Run All (Non Debug)"
 size_flags_horizontal = 0
 size_flags_vertical = 4
-custom_styles/hover = SubResource( 1 )
-custom_styles/pressed = SubResource( 2 )
-custom_styles/focus = SubResource( 3 )
-custom_styles/disabled = SubResource( 4 )
-custom_styles/normal = SubResource( 5 )
+theme_override_styles/hover = SubResource( 1 )
+theme_override_styles/pressed = SubResource( 2 )
+theme_override_styles/focus = SubResource( 3 )
+theme_override_styles/disabled = SubResource( 4 )
+theme_override_styles/normal = SubResource( 5 )
 shortcut = SubResource( 7 )
 icon = ExtResource( 2 )
 flat = true
 
 [node name="Space1" type="Control" parent="Core/Menu"]
-margin_left = 20.0
-margin_right = 23.0
-margin_bottom = 24.0
-rect_min_size = Vector2( 3, 0 )
+offset_left = 20.0
+offset_right = 23.0
+offset_bottom = 24.0
+custom_minimum_size = Vector2( 3, 0 )
 
 [node name="DebugAll" type="Button" parent="Core/Menu"]
-margin_left = 27.0
-margin_top = 4.0
-margin_right = 43.0
-margin_bottom = 20.0
-hint_tooltip = "Run All (With Debugger)"
+offset_left = 27.0
+offset_top = 4.0
+offset_right = 43.0
+offset_bottom = 20.0
+tooltip_text = "Run All (With Debugger)"
 size_flags_horizontal = 0
 size_flags_vertical = 4
-custom_styles/hover = SubResource( 1 )
-custom_styles/pressed = SubResource( 2 )
-custom_styles/focus = SubResource( 3 )
-custom_styles/disabled = SubResource( 4 )
-custom_styles/normal = SubResource( 5 )
+theme_override_styles/hover = SubResource( 1 )
+theme_override_styles/pressed = SubResource( 2 )
+theme_override_styles/focus = SubResource( 3 )
+theme_override_styles/disabled = SubResource( 4 )
+theme_override_styles/normal = SubResource( 5 )
 shortcut = SubResource( 7 )
 icon = ExtResource( 10 )
 flat = true
 
 [node name="Space2" type="Control" parent="Core/Menu"]
-margin_left = 47.0
-margin_right = 50.0
-margin_bottom = 24.0
-rect_min_size = Vector2( 3, 0 )
+offset_left = 47.0
+offset_right = 50.0
+offset_bottom = 24.0
+custom_minimum_size = Vector2( 3, 0 )
 
 [node name="Space4" type="Control" parent="Core/Menu"]
-margin_left = 54.0
-margin_right = 57.0
-margin_bottom = 24.0
-rect_min_size = Vector2( 3, 0 )
+offset_left = 54.0
+offset_right = 57.0
+offset_bottom = 24.0
+custom_minimum_size = Vector2( 3, 0 )
 
 [node name="TestMenu" type="Button" parent="Core/Menu"]
-margin_left = 61.0
-margin_right = 150.0
-margin_bottom = 24.0
+offset_left = 61.0
+offset_right = 150.0
+offset_bottom = 24.0
 size_flags_horizontal = 0
 size_flags_vertical = 5
 text = "Select Tests"
@@ -124,9 +124,9 @@ flat = true
 script = ExtResource( 9 )
 
 [node name="ResultsMenu" type="MenuButton" parent="Core/Menu"]
-margin_left = 154.0
-margin_right = 250.0
-margin_bottom = 24.0
+offset_left = 154.0
+offset_right = 250.0
+offset_bottom = 24.0
 focus_mode = 2
 size_flags_horizontal = 0
 size_flags_vertical = 5
@@ -134,9 +134,9 @@ text = "Filter Results"
 items = [ "Expand All", null, 0, false, false, 0, 0, null, "", false, "Collapse All", null, 0, false, false, 1, 0, null, "", false, "Expand All Failures", null, 0, false, false, 2, 0, null, "", false ]
 
 [node name="RunSettings" type="HBoxContainer" parent="Core/Menu"]
-margin_left = 254.0
-margin_right = 568.0
-margin_bottom = 24.0
+offset_left = 254.0
+offset_right = 568.0
+offset_bottom = 24.0
 size_flags_horizontal = 0
 size_flags_vertical = 4
 __meta__ = {
@@ -144,9 +144,9 @@ __meta__ = {
 }
 
 [node name="Repeats" type="SpinBox" parent="Core/Menu/RunSettings"]
-margin_right = 150.0
-margin_bottom = 24.0
-rect_min_size = Vector2( 150, 0 )
+offset_right = 150.0
+offset_bottom = 24.0
+custom_minimum_size = Vector2( 150, 0 )
 size_flags_horizontal = 0
 size_flags_vertical = 0
 align = 1
@@ -155,10 +155,10 @@ suffix = "Time(s)"
 script = ExtResource( 5 )
 
 [node name="Threads" type="SpinBox" parent="Core/Menu/RunSettings"]
-margin_left = 154.0
-margin_right = 314.0
-margin_bottom = 24.0
-rect_min_size = Vector2( 160, 0 )
+offset_left = 154.0
+offset_right = 314.0
+offset_bottom = 24.0
+custom_minimum_size = Vector2( 160, 0 )
 size_flags_horizontal = 0
 size_flags_vertical = 0
 min_value = 1.0
@@ -170,9 +170,9 @@ suffix = "Thread(s)"
 script = ExtResource( 5 )
 
 [node name="Links" type="MenuButton" parent="Core/Menu"]
-margin_left = 572.0
-margin_right = 617.0
-margin_bottom = 24.0
+offset_left = 572.0
+offset_right = 617.0
+offset_bottom = 24.0
 focus_mode = 2
 size_flags_horizontal = 0
 size_flags_vertical = 5
@@ -181,22 +181,22 @@ items = [ "Support WAT", ExtResource( 13 ), 0, false, false, 0, 0, "https://ko-f
 script = ExtResource( 4 )
 
 [node name="Results" type="TabContainer" parent="Core"]
-margin_top = 28.0
-margin_right = 1010.0
-margin_bottom = 560.0
-rect_min_size = Vector2( 0, 300 )
+offset_top = 28.0
+offset_right = 1010.0
+offset_bottom = 560.0
+custom_minimum_size = Vector2( 0, 300 )
 size_flags_horizontal = 3
 size_flags_vertical = 3
-tab_align = 0
+tab_alignment = 0
 script = ExtResource( 6 )
 __meta__ = {
 "_edit_use_anchors_": false
 }
 
 [node name="Summary" type="HBoxContainer" parent="Core"]
-margin_top = 564.0
-margin_right = 1010.0
-margin_bottom = 586.0
+offset_top = 564.0
+offset_right = 1010.0
+offset_bottom = 586.0
 size_flags_horizontal = 3
 script = ExtResource( 3 )
 __meta__ = {
@@ -204,9 +204,9 @@ __meta__ = {
 }
 
 [node name="Runs" type="Button" parent="Core/Summary"]
-margin_right = 50.0
-margin_bottom = 22.0
-rect_min_size = Vector2( 50, 0 )
+offset_right = 50.0
+offset_bottom = 22.0
+custom_minimum_size = Vector2( 50, 0 )
 focus_mode = 0
 button_mask = 0
 text = "0"
@@ -214,10 +214,10 @@ icon = ExtResource( 2 )
 flat = true
 
 [node name="Tests" type="Button" parent="Core/Summary"]
-margin_left = 54.0
-margin_right = 104.0
-margin_bottom = 22.0
-rect_min_size = Vector2( 50, 0 )
+offset_left = 54.0
+offset_right = 104.0
+offset_bottom = 22.0
+custom_minimum_size = Vector2( 50, 0 )
 focus_mode = 0
 button_mask = 0
 text = "0"
@@ -225,10 +225,10 @@ icon = ExtResource( 14 )
 flat = true
 
 [node name="Passing" type="Button" parent="Core/Summary"]
-margin_left = 108.0
-margin_right = 158.0
-margin_bottom = 22.0
-rect_min_size = Vector2( 50, 0 )
+offset_left = 108.0
+offset_right = 158.0
+offset_bottom = 22.0
+custom_minimum_size = Vector2( 50, 0 )
 focus_mode = 0
 button_mask = 0
 text = "0"
@@ -236,10 +236,10 @@ icon = ExtResource( 18 )
 flat = true
 
 [node name="Failing" type="Button" parent="Core/Summary"]
-margin_left = 162.0
-margin_right = 212.0
-margin_bottom = 22.0
-rect_min_size = Vector2( 50, 0 )
+offset_left = 162.0
+offset_right = 212.0
+offset_bottom = 22.0
+custom_minimum_size = Vector2( 50, 0 )
 focus_mode = 0
 button_mask = 0
 text = "0"
@@ -247,10 +247,10 @@ icon = ExtResource( 17 )
 flat = true
 
 [node name="Time" type="Button" parent="Core/Summary"]
-margin_left = 216.0
-margin_right = 266.0
-margin_bottom = 22.0
-rect_min_size = Vector2( 50, 0 )
+offset_left = 216.0
+offset_right = 266.0
+offset_bottom = 22.0
+custom_minimum_size = Vector2( 50, 0 )
 focus_mode = 0
 button_mask = 0
 text = "0"

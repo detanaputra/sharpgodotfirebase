@@ -1,4 +1,4 @@
-extends Reference
+extends RefCounted
 
 const TestDirectory: GDScript = preload("directory.gd")
 const TestScript: GDScript = preload("script.gd")
@@ -12,11 +12,11 @@ const DO_NOT_SEARCH_PARENT_DIRECTORIES: bool = true
 var root: TestDirectory
 var tagged: TaggedTests
 var failed: FailedTests
-var changed: bool = false setget _set_filesystem_changed
+var changed: bool = false: set = _set_filesystem_changed
 var built: bool = false setget ,_get_filesystem_built # CSharpScript
 var build_function: FuncRef
-var index = {} # Path / Object
-var test_validator: Reference
+var index = {} # Path3D / Object
+var test_validator: RefCounted
 
 # Initialize/Save meta
 func _init(_build_function = null) -> void:
@@ -35,14 +35,14 @@ func _get_filesystem_built() -> bool:
 	return built or not Engine.is_editor_hint() or not ClassDB.class_exists("CSharpScript")
 
 func _recursive_update(testdir: TestDirectory) -> void:
-	var dir: Directory = Directory.new()
+	var dir: DirAccess = DirAccess.new()
 	var err: int = dir.open(testdir.path)
 	if err != OK:
 		push_warning("WAT: Could not update filesystem")
 		return
 	
 	var subdirs: Array = []
-	dir.list_dir_begin(DO_NOT_SEARCH_PARENT_DIRECTORIES)
+	dir.list_dir_begin() # TODOGODOT4 fill missing arguments https://github.com/godotengine/godot/pull/40547
 	var absolute: String = ""
 	var relative: String = dir.get_next()
 	while relative != "":
@@ -94,7 +94,7 @@ func _get_test_script(p: String) -> TestScript:
 		if script_instance:
 			test_script.names = script_instance.get_test_methods()
 			# Skip scripts with 0 defined test methods if validator allows.
-			if test_validator.skip_empty and test_script.names.empty():
+			if test_validator.skip_empty and test_script.names.is_empty():
 				return null
 			for m in test_script.names:
 				var test_method: TestMethod = TestMethod.new()

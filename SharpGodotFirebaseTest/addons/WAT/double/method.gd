@@ -1,4 +1,4 @@
-extends Reference
+extends RefCounted
 
 var name: String = ""
 var spying: bool = false
@@ -20,19 +20,19 @@ func _init(name: String, keyword: String, args: String, defaults: String) -> voi
 	self.args = args
 	self.args_with_defaults = defaults
 
-func dummy() -> Reference:
+func dummy() -> RefCounted:
 	stubbed = true
 	default = null
 	return self
 
-func spy() -> Reference:
+func spy() -> RefCounted:
 	push_warning("Deprecated. Spying on Methods is now Automatic. Please Remove")
 	spying = true
 	return self
 
 func stub(return_value, arguments: Array = []):
 	stubbed = true
-	if arguments.empty():
+	if arguments.is_empty():
 		default = return_value
 	else:
 		stubs.append({args = arguments, "return_value": return_value})

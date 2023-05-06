@@ -50,12 +50,12 @@ func _parse() -> void:
 		_:
 			_quit()
 	
-func run(data: Reference) -> void:
+func run(data: RefCounted) -> void:
 	var repeats: int = _repeats()
 	var threads: int = _threads()
 	
 	var tests: Array = data.get_tests()
-	if tests.empty():
+	if tests.is_empty():
 		push_warning("WAT: No tests found")
 		OS.exit_code = 1
 		_quit()
@@ -63,7 +63,7 @@ func run(data: Reference) -> void:
 	_runner = TestRunner.new()
 	add_child(_runner)
 	var x = load("res://addons/WAT/ui/results/tab_container.gd").new()
-	var results: Array = yield(_runner.run(tests, _repeats(), _threads()), "completed")
+	var results: Array = await _runner.run(tests, _repeats(), _threads()).completed
 	_runner.queue_free()
 	
 	var cases = {passed = 0, total = 0, crashed = 0}
@@ -110,7 +110,7 @@ func _threads() -> int:
 	
 
 func _display(cases: Dictionary) -> void:
-	cases.seconds = stepify(OS.get_ticks_msec() / 1000.0, 0.001)
+	cases.seconds = snapped(Time.get_ticks_msec() / 1000.0, 0.001)
 	_time_taken = cases.seconds
 	print("""
 	-------RESULTS-------

@@ -6,7 +6,7 @@ using Object = Godot.Object;
 
 namespace WAT
 {
-	public class Utility: Assertion
+	public partial class Utility: Assertion
 	{
 		public static Dictionary Fail(string context)
 		{

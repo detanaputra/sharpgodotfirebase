@@ -3,7 +3,7 @@ using Godot.Collections;
 
 namespace WAT
 {
-	public class Range: Assertion
+	public partial class Range: Assertion
 	{
 		public static Dictionary IsInRange(double val, double low, double high, string context)
 		{

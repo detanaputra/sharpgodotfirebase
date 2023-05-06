@@ -1,9 +1,9 @@
-﻿using Godot;
+using Godot;
 using Godot.Collections;
 
 namespace WAT
 {
-    public class StringX: Assertion
+    public partial class StringX: Assertion
     {
         public static Dictionary BeginsWith(string value, string str, string context)
         {

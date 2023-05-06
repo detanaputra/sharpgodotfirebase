@@ -7,7 +7,7 @@ using WAT;
 namespace SharpGodotFirebaseTest
 {
     [Title("Authentication Test 01")]
-    public class AuthTest : Test
+    public partial class AuthTest : Test
     {
         [Test]
         public void SigninWithPassword()

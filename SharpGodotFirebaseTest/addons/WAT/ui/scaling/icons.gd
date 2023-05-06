@@ -1,4 +1,4 @@
-extends Reference
+extends RefCounted
 
 var debug_failed = preload("res://addons/WAT/assets/debug_failed.png")
 var docs = preload("res://addons/WAT/assets/docs.svg")

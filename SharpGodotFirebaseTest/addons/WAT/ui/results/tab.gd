@@ -1,4 +1,4 @@
-extends Reference
+extends RefCounted
 
 var tree: Tree
 var title: String
@@ -8,7 +8,7 @@ var passed: int = 0
 var _multiplier: int = 0
 var _expected_total: int = 0
 var success: bool = false
-var expected setget ,_get_expected
+var expected : get = _get_expected
 
 func _init(_tree: Tree, _title: String, multiplier: int) -> void:
 	tree = _tree

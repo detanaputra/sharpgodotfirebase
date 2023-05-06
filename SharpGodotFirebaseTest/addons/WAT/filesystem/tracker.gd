@@ -1,5 +1,5 @@
-tool
-extends Reference
+@tool
+extends RefCounted
 
 ### This only works in the Editor Context. There are no similair methods..
 ### ..available for the Scene Context.
@@ -14,19 +14,19 @@ func start_tracking_files(plugin: EditorPlugin) -> void:
 	var dock: FileSystemDock = plugin.get_editor_interface().get_file_system_dock()
 	for event in ["file_removed", "files_moved", "folder_moved", "folder_removed"]:
 		var callback: String = "_on_%s" % event
-		if not dock.is_connected(event, self, callback):
-			dock.connect(event, self, callback)
-	if not plugin.is_connected("resource_saved", self, "_on_resource_saved"):
-		plugin.connect("resource_saved", self, "_on_resource_saved")
+		if not dock.is_connected(event, Callable(self, callback)):
+			dock.connect(event, Callable(self, callback))
+	if not plugin.is_connected("resource_saved", Callable(self, "_on_resource_saved")):
+		plugin.connect("resource_saved", Callable(self, "_on_resource_saved"))
 	
 func _stop_tracking_files(plugin: EditorPlugin) -> void:
 	var dock: FileSystemDock = plugin.get_editor_interface().get_file_system_dock()
 	for event in ["file_removed", "files_moved", "folder_moved", "folder_removed"]:
 		var callback: String = "_on_%s" % event
-		if dock.is_connected(event, self, callback):
-			dock.disconnect(event, self, callback)
-	if plugin.is_connected("resource_saved", self, "_on_resource_saved"):
-		plugin.disconnect("resource_saved", self, "_on_resource_saved")
+		if dock.is_connected(event, Callable(self, callback)):
+			dock.disconnect(event, Callable(self, callback))
+	if plugin.is_connected("resource_saved", Callable(self, "_on_resource_saved")):
+		plugin.disconnect("resource_saved", Callable(self, "_on_resource_saved"))
 		
 func _on_filesystem_changed(has_changed: bool) -> void:
 	if has_changed:

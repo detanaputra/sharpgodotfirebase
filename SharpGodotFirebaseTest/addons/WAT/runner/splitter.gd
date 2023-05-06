@@ -1,7 +1,7 @@
 extends Node
 
 static func split(tests: Array, threads: int = 1) -> Array:
-	tests.sort_custom(YieldTimeSorter, "sort_ascending")
+	tests.sort_custom(Callable(YieldTimeSorter, "sort_ascending"))
 	threads = calibrate_threads(tests.size(), threads)
 	return _testthreads(_distribute(_testpools(threads), tests, threads))
 	

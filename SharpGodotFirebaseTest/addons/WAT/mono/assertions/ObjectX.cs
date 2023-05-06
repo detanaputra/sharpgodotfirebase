@@ -4,7 +4,7 @@ using Godot.Collections;
 
 namespace WAT
 {
-	public class ObjectX: Assertion
+	public partial class ObjectX: Assertion
 	{
 		public static Dictionary DoesNotHaveMeta(Object obj, string meta, string context)
 		{
@@ -73,7 +73,7 @@ namespace WAT
 		{
 			string passed = $"{sender}.{signal} is connected to {receiver}.{method}";
 			string failed = $"{sender}.{signal} is not connected to {receiver}.{method}";
-			bool success = sender.IsConnected(signal, receiver, method);
+			bool success = sender.IsConnected(signal, new Callable(receiver, method));
 			string result = success ? passed : failed;
 			return Result(success, passed, result, context);
 		}
@@ -91,7 +91,7 @@ namespace WAT
 		{
 			string passed = $"{sender}.{signal} is not connected to {receiver}.{method}";
 			string failed = $"{sender}.{signal} is connected to {receiver}.{method}";
-			bool success = !sender.IsConnected(signal, receiver, method);
+			bool success = !sender.IsConnected(signal, new Callable(receiver, method));
 			string result = success ? passed : failed;
 			return Result(success, passed, result, context);
 		}

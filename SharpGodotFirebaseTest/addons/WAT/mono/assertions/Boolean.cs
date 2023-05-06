@@ -2,7 +2,7 @@ using Godot.Collections;
 
 namespace WAT
 {
-	public class Boolean: Assertion
+	public partial class Boolean: Assertion
 	{
 		public static Dictionary IsTrue(bool value, string context)
 		{

@@ -1,5 +1,5 @@
-extends Reference
-tool
+@tool
+extends RefCounted
 # We don't seem to need tool here yet but I'm keeping this comment JIC
 
 var nodes: Dictionary = {}
@@ -22,7 +22,7 @@ func double() -> Node:
 	_created = true
 	var root: Node = nodes["."].double()
 	for nodepath in nodes:
-		var path: PoolStringArray = nodepath.split("/")
+		var path: PackedStringArray = nodepath.split("/")
 		if nodepath == ".":
 			# Skip if root node since already defined
 			continue
@@ -34,12 +34,12 @@ func double() -> Node:
 		root.set(prop_name, _export_vars[prop_name])
 	return root
 	
-func _add_child(path: PoolStringArray, nodepath: String, root: Node) -> void:
+func _add_child(path: PackedStringArray, nodepath: String, root: Node) -> void:
 	var node: Node = nodes[nodepath].double()
 	node.name = path[0]
 	root.add_child(node)
 
-func _add_grandchild(path: PoolStringArray, nodepath: String, root: Node) -> void:
+func _add_grandchild(path: PackedStringArray, nodepath: String, root: Node) -> void:
 	var node: Node = nodes[nodepath].double()
 	var p = Array(path)
 	node.name = p.pop_back()

@@ -4,7 +4,7 @@ using Godot.Collections;
 
 namespace WAT {
 
-	public class Is : Assertion
+	public partial class Is : Assertion
 	{
 		public static Dictionary IsType<T>(object value, string context)
 		{

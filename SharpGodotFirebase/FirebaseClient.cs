@@ -19,7 +19,7 @@ namespace SharpGodotFirebase
     public class FirebaseClient
     {
         internal static SetupConfiguration Config;
-        private static HTTPRequest HttpRequest;
+        private static HttpRequest HttpRequest;
         private static bool IsInitialized = false;
 
         /// <summary>
@@ -30,7 +30,7 @@ namespace SharpGodotFirebase
         {
             Config = config;
 
-            HttpRequest = new HTTPRequest
+            HttpRequest = new HttpRequest
             {
                 Name = "HttpRequest"
             };

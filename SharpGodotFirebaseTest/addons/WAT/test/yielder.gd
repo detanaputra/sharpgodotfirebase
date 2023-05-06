@@ -6,7 +6,7 @@ var _event: String
 
 func _init() -> void:
 	one_shot = true
-	connect("timeout", self, "_on_resume", [], CONNECT_DEFERRED)
+	connect("timeout", Callable(self, "_on_resume").bind(), CONNECT_DEFERRED)
 
 func until_timeout(time: float) -> Timer:
 	start(time)
@@ -15,14 +15,14 @@ func until_timeout(time: float) -> Timer:
 func until_signal(time: float, emitter: Object, event: String) -> Timer:
 	_emitter = emitter
 	_event = event
-	_emitter.connect(event, self, "_on_resume", [], CONNECT_DEFERRED)
+	_emitter.connect(event, Callable(self, "_on_resume").bind(), CONNECT_DEFERRED)
 	start(time)
 	return self
 
 func _on_resume(a = null, b = null, c = null, d = null, e = null, f = null) -> void:
 	stop()
-	if is_instance_valid(_emitter) and _emitter.is_connected(_event, self, "_on_resume"):
-		_emitter.disconnect(_event, self, "_on_resume")
+	if is_instance_valid(_emitter) and _emitter.is_connected(_event, Callable(self, "_on_resume")):
+		_emitter.disconnect(_event, Callable(self, "_on_resume"))
 	# Our adapter is connected to this. When this is emitted our adapter
 	# ..will call "_next" which call defers _change_state. Since it is a deferred
 	# ..call the test will resume first. Therefore if a new yield gets constructed

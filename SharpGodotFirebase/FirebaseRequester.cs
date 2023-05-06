@@ -10,11 +10,11 @@ namespace SharpGodotFirebase
 {
     internal abstract class FirebaseRequester : Node
     {
-        protected static HTTPRequest HttpRequest;
+        protected static HttpRequest HttpRequest;
         
-        protected virtual async Task<IRequestResult> SendRequest(HTTPRequest httpRequest, string address, string content = "", string[] customHeader = null, HTTPClient.Method method = HTTPClient.Method.Post)
+        protected virtual async Task<IRequestResult> SendRequest(HttpRequest httpRequest, string address, string content = "", string[] customHeader = null, HttpClient.Method method = HttpClient.Method.Post)
         {
-            Error err = httpRequest.Request(address, customHeader, true, method, content);
+            Error err = httpRequest.Request(address, customHeader, method, content);
             if (err != Error.Ok)
             {
                 Logger.LogErr("http request can not be made");
@@ -24,14 +24,14 @@ namespace SharpGodotFirebase
                     ResponseCode = -1,
                 };
             }
-            object[] signalResult = await ToSignal(httpRequest, SignalStringProvider.GodotSignal.RequestCompleted);
+            Variant[] signalResult = await ToSignal(httpRequest, HttpRequest.SignalName.RequestCompleted);
 
             return new RequestResult()
             {
                 Result = (int)signalResult[0],
                 ResponseCode = (int)signalResult[1],
                 Header = (string[])signalResult[2],
-                Body = ((byte[])signalResult[3]).GetStringFromUTF8()
+                Body = ((byte[])signalResult[3]).GetStringFromUtf8()
             };
         }
 

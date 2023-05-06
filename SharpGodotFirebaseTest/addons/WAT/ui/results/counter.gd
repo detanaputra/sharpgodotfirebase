@@ -1,18 +1,18 @@
-extends Reference
+extends RefCounted
 # Counter TreeItem component for tests passed over total executed.
 
 signal counter_changed
 
 var component: TreeItem
 var path: String
-var title: String setget set_title
-var passed: int = 0 setget set_passed
-var total: int = 0 setget set_total
+var title: String: set = set_title
+var passed: int = 0: set = set_passed
+var total: int = 0: set = set_total
 var show: bool = true
 
 func _init(_component: TreeItem) -> void:
 	component = _component
-	connect("counter_changed", self, "display")
+	connect("counter_changed", Callable(self, "display"))
 
 func set_passed(_passed: int) -> void:
 	passed = _passed

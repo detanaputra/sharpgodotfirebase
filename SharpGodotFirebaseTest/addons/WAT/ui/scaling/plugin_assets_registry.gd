@@ -1,4 +1,4 @@
-extends Reference
+extends RefCounted
 # Stores and scales editor related UI assets according to the user's editor scale.
 # Repo: https://github.com/Atlinx/Godot-PluginAssetsRegistry
 
@@ -31,12 +31,12 @@ func load_asset(asset):
 			if asset is Font:
 				loaded_editor_assets[asset] = _load_scaled_font(asset)
 				return loaded_editor_assets[asset]
-			elif asset is Texture:
+			elif asset is Texture2D:
 				loaded_editor_assets[asset] = _load_scaled_texture(asset)
 				return loaded_editor_assets[asset]
-			assert(false, "Cannot scale asset of type " + asset.get_class())
+			assert(false) #,"Cannot scale asset of type " + asset.get_class())
 
-func _load_scaled_texture(texture: Texture) -> Texture:
+func _load_scaled_texture(texture: Texture2D) -> Texture2D:
 	# get_data already returns a copy, therefore no need to duplicate
 	var image = texture.get_data()
 	image.resize(image.get_width() * get_editor_scale(), image.get_height() * get_editor_scale())
@@ -46,7 +46,7 @@ func _load_scaled_texture(texture: Texture) -> Texture:
 	
 	return scaled_texture 
 
-func _load_scaled_font(font: Font) -> DynamicFont:
+func _load_scaled_font(font: Font) -> FontFile:
 	var duplicate = font.duplicate()
 	duplicate.size *= get_editor_scale()
 	return duplicate
@@ -76,10 +76,10 @@ func _calculate_current_editor_scale_3_1() -> float:
 	match display_scale:
 		0:
 			if OS.get_name() == "OSX":
-				return OS.get_screen_max_scale()
+				return DisplayServer.screen_get_max_scale()
 			else:
-				var screen: int = OS.get_current_screen()
-				if OS.get_screen_dpi(screen) >= 192 and OS.get_screen_size(screen).x > 2000:
+				var screen: int = get_window().get_current_screen()
+				if DisplayServer.screen_get_dpi(screen) >= 192 and DisplayServer.screen_get_size(screen).x > 2000:
 					return 2.0
 				else:
 					return 1.0
@@ -105,8 +105,8 @@ func _calculate_current_editor_scale_3_0() -> float:
 	
 	match dpi_mode:
 		0:
-			var screen: int = OS.get_current_screen()
-			if OS.get_screen_dpi(screen) >= 192 and OS.get_screen_size(screen).x > 2000:
+			var screen: int = get_window().get_current_screen()
+			if DisplayServer.screen_get_dpi(screen) >= 192 and DisplayServer.screen_get_size(screen).x > 2000:
 				return 2.0
 			else:
 				return 1.0

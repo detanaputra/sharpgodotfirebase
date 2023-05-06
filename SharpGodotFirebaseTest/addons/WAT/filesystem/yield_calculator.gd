@@ -1,4 +1,4 @@
-extends Reference
+extends RefCounted
 
 const COMMENT: String = "#"
 const PRE_HOOK: String = "func pre()"
@@ -8,7 +8,7 @@ const OPENING_STRING_QUOTE: String = '"'
 
 static func calculate_yield_time(gdscript: Script, test_method_count: int) -> float:
 	var time: float = 0.0
-	var floats: PoolRealArray = PoolRealArray()
+	var floats: PackedFloat32Array = PackedFloat32Array()
 	var in_hook: bool = false
 	for line in gdscript.source_code.split("\n"):
 		if line.begins_with(PRE_HOOK) or line.begins_with(POST_HOOK):
@@ -17,7 +17,7 @@ static func calculate_yield_time(gdscript: Script, test_method_count: int) -> fl
 		elif line.begins_with(FUNCTION):
 			in_hook = false
 		if "YIELD" in line and not line.begins_with(COMMENT) and not line.begins_with(OPENING_STRING_QUOTE):
-			var f: PoolRealArray = PoolRealArray()
+			var f: PackedFloat32Array = PackedFloat32Array()
 			f += line.split_floats("(")
 			f += line.split_floats(",")
 			if in_hook:
@@ -27,8 +27,8 @@ static func calculate_yield_time(gdscript: Script, test_method_count: int) -> fl
 		time += real
 	return time
 
-static func duplicate(source: PoolRealArray, count: int) -> PoolRealArray:
-	var floats: PoolRealArray = PoolRealArray()
+static func duplicate(source: PackedFloat32Array, count: int) -> PackedFloat32Array:
+	var floats: PackedFloat32Array = PackedFloat32Array()
 	for real in source:
 		for i in count:
 			floats.append(real)

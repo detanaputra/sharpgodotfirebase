@@ -37,23 +37,23 @@ func setup(directory = "", filepath = "", methods = []):
 
 func run():
 	var cursor = -1
-	yield(call_function("start"), COMPLETED)
+	await call_function("start").COMPLETED
 	while cursor < _methods.size() - 1 or rerun_method:
 		if not rerun_method:
 			cursor += 1
 		for hook in ["pre", "execute", "post"]:
-			yield(call_function(hook, cursor), COMPLETED)
+			await call_function(hook, cursor).COMPLETED
 			# Post-yield so this should be correct
 			# What about repeated methods?
 			if hook == "execute" and not rerun_method:
 				emit_signal("test_method_finished")
-	yield(call_function("end"), COMPLETED)
+	await call_function("end").COMPLETED
 	emit_signal("test_script_finished", get_results())
 	
 func call_function(function, cursor = 0):
 	var s = call(function) if function != "execute" else execute(cursor)
 	call_deferred("emit_signal", COMPLETED)
-	yield(s, COMPLETED) if s is GDScriptFunctionState else yield(self, COMPLETED)
+	await s.COMPLETED if s is GDScriptFunctionState else yield(self, COMPLETED)
 
 func execute(cursor: int):
 	var _current_method: String = _methods[cursor]
@@ -80,11 +80,11 @@ func _ready() -> void:
 	p = _parameters.parameters
 	direct.registry = _registry
 	# May be better just as a property on asserts itself
-	asserts.connect("asserted", self, "_on_assertion")
+	asserts.connect("asserted", Callable(self, "_on_assertion"))
 	add_child(direct)
 	add_child(_yielder)
-	connect("described", _case, "_on_test_method_described")
-	asserts.connect("asserted", _case, "_on_asserted")
+	connect("described", Callable(_case, "_on_test_method_described"))
+	asserts.connect("asserted", Callable(_case, "_on_asserted"))
 	run()
 
 func start():
@@ -131,7 +131,7 @@ func describe(message: String) -> void:
 	
 func title() -> String:
 	var path: String = get_script().get_path()
-	var substr: String = path.substr(path.find_last("/") + 1, 
+	var substr: String = path.substr(path.rfind("/") + 1, 
 	path.find(".gd")).replace(".gd", "").replace("test", "").replace(".", " ").capitalize()
 	return substr
 	

@@ -1,8 +1,8 @@
-extends Reference
+extends RefCounted
 
 var is_root: bool = false
-var name: String setget ,_get_sanitized_name
-var path: String setget ,_get_path
+var name: String: get = _get_sanitized_name
+var path: String: get = _get_path
 var relative_subdirs: Array
 var nested_subdirs: Array
 var tests: Array = []
@@ -25,4 +25,4 @@ func get_tests() -> Array:
 	return requested
 	
 func is_empty() -> bool:
-	return tests.empty()
+	return tests.is_empty()

@@ -1,4 +1,4 @@
-﻿using System;
+using System;
 using System.Collections;
 using System.Globalization;
 using System.Reflection;
@@ -6,7 +6,7 @@ using Godot.Collections;
 
 namespace WAT
 {
-    public class Equality: Assertion
+    public partial class Equality: Assertion
     {
         public static Dictionary IsEqual(object a, object b, string context)
         {

@@ -9,14 +9,14 @@ using Object = Godot.Object;
 
 namespace WAT
 {
-	public class Signal: Assertion
+	public partial class Signal: Assertion
 	{
 		public static Dictionary WasEmitted(Object emitter, string signal, string context)
 		{
 			string passed = $"Signal {signal} was emitted from {emitter}";
 			string failed = $"Signal {signal} was not emitted from {emitter}";
 
-			Reference watcher = (Reference) emitter.Call("get_meta", "watcher");
+			RefCounted watcher = (RefCounted) emitter.Call("get_meta", "watcher");
 			bool success = (int) watcher.Call("get_emit_count", signal) > 0;
 			string result = success ? passed : failed;
 
@@ -28,7 +28,7 @@ namespace WAT
 			string passed = $"Signal {signal} was not emitted from {emitter}";
 			string failed = $"Signal {signal} was emitted from {emitter}";
 			
-			Reference watcher = (Reference) emitter.GetMeta("watcher");
+			RefCounted watcher = (RefCounted) emitter.GetMeta("watcher");
 			bool success = (int) watcher.Call("get_emit_count", signal) <= 0;
 			string result = success ? passed : failed;
 
@@ -40,7 +40,7 @@ namespace WAT
 			string passed = $"Signal {signal} was emitted {times} times from {emitter}";
 			string failed = $"Signal {signal} was not emitted {times} times from {emitter}";
 			
-			Reference watcher = (Reference) emitter.GetMeta("watcher");
+			RefCounted watcher = (RefCounted) emitter.GetMeta("watcher");
 			bool success = (int) watcher.Call("get_emit_count", signal) == times;
 			string result = success ? passed : failed;
 
@@ -55,7 +55,7 @@ namespace WAT
 
 			bool success = false;
 			string result = "";
-			Reference watcher = (Reference) emitter.GetMeta("watcher");
+			RefCounted watcher = (RefCounted) emitter.GetMeta("watcher");
 			IDictionary data = (IDictionary) watcher.Call("get_data", signal);
 			if ((int) data["emit_count"] <= 0)
 			{

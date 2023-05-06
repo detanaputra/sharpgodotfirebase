@@ -1,4 +1,4 @@
-extends Reference
+extends RefCounted
 # Tag / Resource Path
 var tagged: Dictionary = {}
 var _settings: GDScript
@@ -33,7 +33,7 @@ func update() -> void:
 		if not tagged.has(tag):
 			tagged[tag] = []
 			
-func set_tests(tag: String, root: Reference) -> void:
+func set_tests(tag: String, root: RefCounted) -> void:
 	_tests.clear()
 	for test in root.get_tests():
 		if tagged[tag].has(test["path"]):

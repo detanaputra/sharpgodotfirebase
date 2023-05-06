@@ -15,7 +15,7 @@ namespace SharpGodotFirebase.RemoteConfigs
     {
         private static RemoteConfig remoteConfigNode;
 
-        internal static void Initialize(HTTPRequest hTTPRequest)
+        internal static void Initialize(HttpRequest hTTPRequest)
         {
             HttpRequest = hTTPRequest;
             remoteConfigNode = new RemoteConfig() { Name = "RemoteConfig" };
@@ -25,7 +25,7 @@ namespace SharpGodotFirebase.RemoteConfigs
         internal async Task<RemoteConfigResult> GetRemoteConfig()
         {
             string address = UrlBuilder.GetRemoteConfigUrl();
-            IRequestResult requestResult = await SendRequest(HttpRequest, address, "", null, HTTPClient.Method.Get);
+            IRequestResult requestResult = await SendRequest(HttpRequest, address, "", null, HttpClient.Method.Get);
             RemoteConfigResult remoteConfigResult = new RemoteConfigResult(requestResult);
             if (remoteConfigResult.EnsureSuccess())
             {
@@ -35,7 +35,7 @@ namespace SharpGodotFirebase.RemoteConfigs
             return remoteConfigResult;
         }
 
-        protected override async Task<IRequestResult> SendRequest(HTTPRequest httpRequest, string address, string content = "", string[] customHeader = null, HTTPClient.Method method = HTTPClient.Method.Post)
+        protected override async Task<IRequestResult> SendRequest(HttpRequest httpRequest, string address, string content = "", string[] customHeader = null, HttpClient.Method method = HttpClient.Method.Post)
         {
             string[] header = customHeader;
             if (header == null)

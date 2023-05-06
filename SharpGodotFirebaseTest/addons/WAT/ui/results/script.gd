@@ -3,9 +3,10 @@ extends "res://addons/WAT/ui/results/counter.gd"
 const MethodTreeItem: GDScript = preload("res://addons/WAT/ui/results/method.gd")
 
 var methods: Dictionary = {}
-var method_names: PoolStringArray
+var method_names: PackedStringArray
 
-func _init(_component: TreeItem, data: Dictionary).(_component) -> void:
+func _init(_component: TreeItem, data: Dictionary) -> void:
+	super(_component)
 	set_title(data["name"] if data["title"] == "" else data["title"])
 	path = data["path"]
 	method_names = data["methods"]

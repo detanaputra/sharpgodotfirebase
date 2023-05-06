@@ -1,9 +1,9 @@
-tool
-extends Reference
+@tool
+extends RefCounted
 
 const PluginAssetsRegistry: GDScript = preload("res://addons/WAT/ui/scaling/plugin_assets_registry.gd")
 
-static func adjust(runner: PanelContainer, icons: Reference, plugin = null) -> void:
+static func adjust(runner: PanelContainer, icons: RefCounted, plugin = null) -> void:
 	var registry: PluginAssetsRegistry = PluginAssetsRegistry.new(plugin)
 	
 	# Scale Icons

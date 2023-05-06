@@ -1,10 +1,10 @@
-﻿using System;
+using System;
 using Godot;
 using Godot.Collections;
 
 namespace WAT
 {
-    public class File: Assertion
+    public partial class File: Assertion
     {
         public static Dictionary Exists(string path, string context)
         {

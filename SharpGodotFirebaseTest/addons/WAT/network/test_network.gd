@@ -1,11 +1,11 @@
-tool
+@tool
 extends Node
 
 const IPAddress: String = "127.0.0.1"
 const PORT: int = 6019
 const MAXCLIENTS: int = 1
 const MASTER: int = 1
-var _peer: NetworkedMultiplayerENet
+var _peer: ENetMultiplayerPeer
 var _id: int
 
 func _init() -> void:
@@ -13,10 +13,10 @@ func _init() -> void:
 	custom_multiplayer = MultiplayerAPI.new()
 	custom_multiplayer.root_node = self
 	custom_multiplayer.allow_object_decoding = true
-	_peer = NetworkedMultiplayerENet.new()
+	_peer = ENetMultiplayerPeer.new()
 	
 func _process(delta: float) -> void:
-	if custom_multiplayer.has_network_peer():
+	if custom_multiplayer.has_multiplayer_peer():
 		custom_multiplayer.poll()
 
 func _close() -> void:
@@ -37,7 +37,7 @@ func _error(err: int) -> int:
 	return err
 	
 func _is_connected() -> bool:
-	return _peer.get_connection_status() == NetworkedMultiplayerENet.CONNECTION_CONNECTED
+	return _peer.get_connection_status() == ENetMultiplayerPeer.CONNECTION_CONNECTED
 
 func _exit_tree() -> void:
 	_close()

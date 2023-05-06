@@ -1,4 +1,4 @@
-tool
+@tool
 extends EditorPlugin
 
 const Title: String = "Tests"
@@ -24,7 +24,7 @@ func _enter_tree() -> void:
 	Metadata.load_metadata(_file_system)
 	_assets_registiry = PluginAssetsRegistry.new(self)
 	_file_tracker.start_tracking_files(self)
-	_test_panel = GUI.instance()
+	_test_panel = GUI.instantiate()
 	_test_panel.setup_editor_context(self, build, funcref(self, "goto_function"), _file_system)
 	_panel_docker = TestPanelDocker.new(self, _test_panel)
 	add_child(_panel_docker)
@@ -44,8 +44,8 @@ func _build_function() -> bool:
 	var editor: EditorInterface = get_editor_interface()
 	editor.play_custom_scene("res://addons/WAT/mono/BuildScene.tscn")
 	while editor.is_playing_scene():
-		yield(get_tree(), "idle_frame")
-	yield(get_tree(), "idle_frame")
+		await get_tree().idle_frame
+	await get_tree().idle_frame
 	_file_system.update()
 	_file_system.changed = false
 	make_bottom_panel_item_visible(_test_panel)

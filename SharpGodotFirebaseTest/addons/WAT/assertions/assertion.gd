@@ -1,4 +1,4 @@
-extends Reference
+extends RefCounted
 
 var success: bool
 var expected: String = "NULL"
@@ -22,7 +22,7 @@ static func type2str(property) -> String:
 			return "bool"
 		TYPE_INT:
 			return "int"
-		TYPE_REAL:
+		TYPE_FLOAT:
 			return "float"
 		TYPE_STRING:
 			return "String"
@@ -36,14 +36,14 @@ static func type2str(property) -> String:
 			return "Transform2D"
 		TYPE_PLANE:
 			return "Plane"
-		TYPE_QUAT:
-			return "Quat"
+		TYPE_QUATERNION:
+			return "Quaternion"
 		TYPE_AABB:
 			return "AABB"
 		TYPE_BASIS:
 			return "Basis"
-		TYPE_TRANSFORM:
-			return "Transform"
+		TYPE_TRANSFORM3D:
+			return "Transform3D"
 		TYPE_COLOR:
 			return "Color"
 		TYPE_NODE_PATH:
@@ -56,18 +56,18 @@ static func type2str(property) -> String:
 			return "Dictionary"
 		TYPE_ARRAY:
 			return "Array"
-		TYPE_RAW_ARRAY:
-			return "PoolByteArray"
-		TYPE_INT_ARRAY:
-			return "PoolIntArray"
-		TYPE_REAL_ARRAY:
-			return "PoolRealArray"
-		TYPE_STRING_ARRAY:
-			return "PoolStringArray"
-		TYPE_VECTOR2_ARRAY:
-			return "PoolVector2Array"
-		TYPE_VECTOR3_ARRAY:
-			return "PoolVector3Array"
-		TYPE_COLOR_ARRAY:
-			return "PoolColorArray"
+		TYPE_PACKED_BYTE_ARRAY:
+			return "PackedByteArray"
+		TYPE_PACKED_INT32_ARRAY:
+			return "PackedInt32Array"
+		TYPE_PACKED_FLOAT32_ARRAY:
+			return "PackedFloat32Array"
+		TYPE_PACKED_STRING_ARRAY:
+			return "PackedStringArray"
+		TYPE_PACKED_VECTOR2_ARRAY:
+			return "PackedVector2Array"
+		TYPE_PACKED_VECTOR3_ARRAY:
+			return "PackedVector3Array"
+		TYPE_PACKED_COLOR_ARRAY:
+			return "PackedColorArray"
 	return "OutOfBounds"

@@ -5,7 +5,7 @@ using Godot.Collections;
 
 namespace WAT
 {
-	public class Assertion
+	public partial class Assertion
 	{
 
 		protected static Dictionary Result(bool success, string expected, string actual, string context, string notes = "")

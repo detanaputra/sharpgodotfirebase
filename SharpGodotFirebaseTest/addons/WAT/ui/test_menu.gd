@@ -1,4 +1,4 @@
-tool
+@tool
 extends Button
 
 # TODO
@@ -21,14 +21,14 @@ func _pressed():
 	if filesystem.changed:
 		if not filesystem.built:
 			current_build = false
-			filesystem.built = yield(filesystem.build_function.call_func(), "completed")
+			filesystem.built = await filesystem.build_function.call_func().completed
 		filesystem.update()
 		update_menus()
 	if current_build:
-		var position: Vector2 = rect_global_position
-		position.y += rect_size.y
-		_menu.rect_global_position = position
-		_menu.rect_size = Vector2(rect_size.x, 0)
+		var position: Vector2 = global_position
+		position.y += size.y
+		_menu.global_position = position
+		_menu.size = Vector2(size.x, 0)
 		_menu.grab_focus()
 		_menu.popup()
 	
@@ -44,7 +44,7 @@ func update_menus() -> void:
 	_add_tag_run_menu()
 	
 	for dir in [filesystem.root] + filesystem.root.nested_subdirs:
-		if dir.tests.empty():
+		if dir.tests.is_empty():
 			continue
 		var dir_menu = _add_menu(_menu, dir, icons.folder, -1)
 		_add_run_callback(dir_menu, dir)
@@ -76,7 +76,7 @@ func _add_run_callback(menu: PopupMenu, data: Object) -> void:
 	menu.set_item_icon(0, icons.play)
 	menu.set_item_icon(1, icons.play_debug)
 	menu.set_item_disabled(1, not Engine.is_editor_hint())
-	menu.connect("index_pressed", self, "_on_idx_pressed", [menu])
+	menu.connect("index_pressed", Callable(self, "_on_idx_pressed").bind(menu))
 	
 func _add_failed_run_menu() -> void:
 	var failed_menu: PopupMenu = PopupMenu.new()
@@ -90,7 +90,7 @@ func _add_failed_run_menu() -> void:
 	failed_menu.set_item_metadata(0, filesystem.failed)
 	failed_menu.set_item_metadata(1, filesystem.failed)
 	failed_menu.set_item_disabled(1, not Engine.is_editor_hint())
-	failed_menu.connect("index_pressed", self, "_on_failed_menu_pressed")
+	failed_menu.connect("index_pressed", Callable(self, "_on_failed_menu_pressed"))
 	
 func _add_tag_run_menu() -> void:
 	var tag_menu: PopupMenu = PopupMenu.new()
@@ -107,13 +107,13 @@ func _add_tag_run_menu() -> void:
 		options.set_item_icon(0, icons.play)
 		options.set_item_icon(1, icons.play_debug)
 		options.set_item_disabled(1, not Engine.is_editor_hint())
-		options.connect("index_pressed", self, "_on_tag_pressed", [tag])
+		options.connect("index_pressed", Callable(self, "_on_tag_pressed").bind(tag))
 
 func _add_tag_editor(script_menu: PopupMenu, script: Object) -> void:
 	var tagger: PopupMenu = PopupMenu.new()
 	tagger.hide_on_checkable_item_selection = false
-	tagger.connect("about_to_show", self, "_on_tag_editor_about_to_show", [tagger, script])
-	tagger.connect("index_pressed", self, "_on_tagged", [tagger, script])
+	tagger.connect("about_to_popup", Callable(self, "_on_tag_editor_about_to_show").bind(tagger, script))
+	tagger.connect("index_pressed", Callable(self, "_on_tagged").bind(tagger, script))
 	# Unnecessary since we change per access
 	for tag in Settings.tags():
 		tagger.add_check_item(tag)

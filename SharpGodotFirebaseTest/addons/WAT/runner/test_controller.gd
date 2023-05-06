@@ -31,25 +31,25 @@ func run(metadata: Dictionary) -> void:
 	if metadata.get("parse", OK) == OK:
 		# Signals leak in C# so we're just using a direct connection and GetParent Calls
 		_test = load(_path).new().setup(_dir, _path, _methods)
-		_test.connect("test_method_started", self, "_on_test_method_started")
-		_test.connect("described", self, "_on_test_method_described")
-		_test.connect("asserted", self, "_on_asserted")
-		_test.connect("test_method_finished", self, "_on_test_method_finished")
-		_test.connect("test_script_finished", self, "_on_test_script_finished")
+		_test.connect("test_method_started", Callable(self, "_on_test_method_started"))
+		_test.connect("described", Callable(self, "_on_test_method_described"))
+		_test.connect("asserted", Callable(self, "_on_asserted"))
+		_test.connect("test_method_finished", Callable(self, "_on_test_method_finished"))
+		_test.connect("test_script_finished", Callable(self, "_on_test_script_finished"))
 		_on_test_script_started(metadata) # Needs to be after _test is loaded.
 		
 		# We need to wait for the object itself to emit the signal (since we..
 		# ..cannot yield for C# so we defer the call to run so we have time to..
 		# ..to setup our yielding rather than deal with a race condition)
 		call_deferred("add_child", _test)
-		test_results = yield(self, "results_received") # test_script_finished
+		test_results = await self.results_received # test_script_finished
 		_test.queue_free()
 		# Reset for the next case.
 		_test = null
 	else:
 		_on_test_script_started(metadata)
 		# Nothing to call_deferred here, so just yield for next idle_frame.
-		yield(get_tree(), "idle_frame")
+		await get_tree().idle_frame
 		_on_test_script_finished(test_results)
 	return test_results
 	

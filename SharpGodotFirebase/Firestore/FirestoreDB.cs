@@ -15,7 +15,7 @@ namespace SharpGodotFirebase.Firestore
     {
         private static FirestoreDB firestoreDBNode;
 
-        internal static void Initialize(HTTPRequest hTTPRequest)
+        internal static void Initialize(HttpRequest hTTPRequest)
         {
             HttpRequest = hTTPRequest;
             firestoreDBNode = new FirestoreDB();
@@ -30,7 +30,7 @@ namespace SharpGodotFirebase.Firestore
         internal async Task<FirestoreResult<T>> GetDocument<T>(DocumentReference documentReference)
         {
             string address = UrlBuilder.GetFirestoreUrl(documentReference.Path);
-            IRequestResult requestResult = await SendRequest(HttpRequest, address, "", null, HTTPClient.Method.Get);
+            IRequestResult requestResult = await SendRequest(HttpRequest, address, "", null, HttpClient.Method.Get);
             FirestoreResult<T> firestoreResult = new FirestoreResult<T>(requestResult);
             if (firestoreResult.EnsureSuccess())
             {
@@ -54,7 +54,7 @@ namespace SharpGodotFirebase.Firestore
             return firestoreResult;
         }
 
-        protected override Task<IRequestResult> SendRequest(HTTPRequest httpRequest, string address, string content = "", string[] header = null, HTTPClient.Method method = HTTPClient.Method.Post)
+        protected override Task<IRequestResult> SendRequest(HttpRequest httpRequest, string address, string content = "", string[] header = null, HttpClient.Method method = HttpClient.Method.Post)
         {
             string[] customHeader = header;
             if (customHeader == null)

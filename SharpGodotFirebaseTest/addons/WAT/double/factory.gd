@@ -18,11 +18,11 @@ func script(path, inner: String = "", deps: Array = []) -> ScriptDirector:
 func scene(tscn) -> SceneDirector:
 	# Must be String.tscn or PackedScene
 	var scene: PackedScene = load(tscn) if tscn is String else tscn
-	var instance: Node = scene.instance()
+	var instance: Node = scene.instantiate()
 	var nodes: Dictionary = {}
 	var frontier: Array = []
 	frontier.append(instance)
-	while not frontier.empty():
+	while not frontier.is_empty():
 		var next: Node = frontier.pop_front()
 		if next.name.begins_with("@@"):
 			# Don't double engine-generated classes (usually begin with @@)

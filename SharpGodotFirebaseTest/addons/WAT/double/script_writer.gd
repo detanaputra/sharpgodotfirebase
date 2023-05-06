@@ -1,4 +1,4 @@
-extends Reference
+extends RefCounted
 
 
 func write(double) -> String:
@@ -25,7 +25,8 @@ func _extension_to_string(double) -> String:
 	
 func _constructor_to_string(parameters: String) -> String:
 	var constructor: String = ""
-	constructor += "\nfunc _init(%s).(%s):" % [parameters, parameters]
+	constructor += "\nfunc _init(%s):" % [parameters, parameters]
+		super(%s)
 	constructor += "\n\tpass\n"
 	return constructor
 

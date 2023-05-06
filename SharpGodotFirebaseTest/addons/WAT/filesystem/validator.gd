@@ -1,14 +1,14 @@
-extends Reference
+extends RefCounted
 
 # To search broken script source for WAT.Test usage.
 const WAT_TEST_PATTERN = "(\\bextends\\s+WAT.Test\\b)" + \
 	"|(\\bextends\\b\\s+\\\"res:\\/\\/addons\\/WAT\\/test\\/test.gd\\\")" + \
 	"|(class\\s\\w[\\w<>]+\\s*:\\s*WAT.Test[\\s\\{])"
 
-var path: String setget load_path
+var path: String: set = load_path
 var regex: RegEx
-var script_resource: Script setget ,get_script_resource
-var script_instance setget ,get_script_instance
+var script_resource: Script: get = get_script_resource
+var script_instance : get = get_script_instance
 # If true, test scripts with 0 defined test methods should be skipped.
 var skip_empty: bool = true
 
@@ -57,7 +57,7 @@ func get_load_error() -> int:
 	if script_resource:
 		# Script resource with 0 methods signify parse error / uncompiled.
 		# Loaded scripts always have at least one method from its base class.
-		error = OK if not script_resource.get_script_method_list().empty() \
+		error = OK if not script_resource.get_script_method_list().is_empty() \
 				else ERR_PARSE_ERROR
 	return error
 

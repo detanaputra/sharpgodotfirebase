@@ -5,7 +5,7 @@ using Object = Godot.Object;
 
 namespace WAT {
 		
-	public class Assertions : Reference
+	public partial class Assertions : RefCounted
 	{
 		// ReSharper disable once InconsistentNaming
 		[Signal] public delegate void asserted();

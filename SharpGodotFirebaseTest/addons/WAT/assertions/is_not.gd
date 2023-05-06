@@ -98,65 +98,65 @@ static func is_not_Plane(value, context: String) -> Dictionary:
 	return _result(success, passed, result, context)
 
 static func is_not_PoolByteArray(value, context: String) -> Dictionary:
-	var passed: String = "%s is not builtin: PoolByteArray" % value
-	var failed: String = "%s is builtin: PoolByteArray" % value
-	var success = not value is PoolByteArray
+	var passed: String = "%s is not builtin: PackedByteArray" % value
+	var failed: String = "%s is builtin: PackedByteArray" % value
+	var success = not value is PackedByteArray
 	var expected = passed
 	var result = passed if success else failed
 	return _result(success, passed, result, context)
 
 static func is_not_PoolColorArray(value, context: String) -> Dictionary:
-	var passed: String = "%s is not builtin: PoolColorArray" % value
-	var failed: String = "%s is builtin: PoolColorArray" % value
-	var success = not value is PoolColorArray
+	var passed: String = "%s is not builtin: PackedColorArray" % value
+	var failed: String = "%s is builtin: PackedColorArray" % value
+	var success = not value is PackedColorArray
 	var expected = passed
 	var result = passed if success else failed
 	return _result(success, passed, result, context)
 
 static func is_not_PoolIntArray(value, context: String) -> Dictionary:
-	var passed: String = "%s is not builtin: PoolIntArray" % value
-	var failed: String = "%s is builtin: PoolIntArray" % value
-	var success = not value is PoolIntArray
+	var passed: String = "%s is not builtin: PackedInt32Array" % value
+	var failed: String = "%s is builtin: PackedInt32Array" % value
+	var success = not value is PackedInt32Array
 	var expected = passed
 	var result = passed if success else failed
 	return _result(success, passed, result, context)
 
 static func is_not_PoolRealArray(value, context: String) -> Dictionary:
-	var passed: String = "%s is not builtin: PoolRealArray" % value
-	var failed: String = "%s is builtin: PoolRealArray" % value
-	var success = not value is PoolRealArray
+	var passed: String = "%s is not builtin: PackedFloat32Array" % value
+	var failed: String = "%s is builtin: PackedFloat32Array" % value
+	var success = not value is PackedFloat32Array
 	var expected = passed
 	var result = passed if success else failed
 	return _result(success, passed, result, context)
 
 static func is_not_PoolStringArray(value, context: String) -> Dictionary:
-	var passed: String = "%s is not builtin: PoolStringArray" % value
-	var failed: String = "%s is builtin: PoolStringArray" % value
-	var success = not value is PoolStringArray
+	var passed: String = "%s is not builtin: PackedStringArray" % value
+	var failed: String = "%s is builtin: PackedStringArray" % value
+	var success = not value is PackedStringArray
 	var expected = passed
 	var result = passed if success else failed
 	return _result(success, passed, result, context)
 
 static func is_not_PoolVector2Array(value, context: String) -> Dictionary:
-	var passed: String = "%s is not builtin: PoolVector2Array" % value
-	var failed: String = "%s is builtin: PoolVector2Array" % value
-	var success = not value is PoolVector2Array
+	var passed: String = "%s is not builtin: PackedVector2Array" % value
+	var failed: String = "%s is builtin: PackedVector2Array" % value
+	var success = not value is PackedVector2Array
 	var expected = passed
 	var result = passed if success else failed
 	return _result(success, passed, result, context)
 
 static func is_not_PoolVector3Array(value, context: String) -> Dictionary:
-	var passed: String = "%s is not builtin: PoolVector3Array" % value
-	var failed: String = "%s is builtin: PoolVector3Array" % value
-	var success = not value is PoolVector3Array
+	var passed: String = "%s is not builtin: PackedVector3Array" % value
+	var failed: String = "%s is builtin: PackedVector3Array" % value
+	var success = not value is PackedVector3Array
 	var expected = passed
 	var result = passed if success else failed
 	return _result(success, passed, result, context)
 
 static func is_not_Quat(value, context: String) -> Dictionary:
-	var passed: String = "%s is not builtin: Quat" % value
-	var failed: String = "%s is builtin: Quat" % value
-	var success = not value is Quat
+	var passed: String = "%s is not builtin: Quaternion" % value
+	var failed: String = "%s is builtin: Quaternion" % value
+	var success = not value is Quaternion
 	var expected = passed
 	var result = passed if success else failed
 	return _result(success, passed, result, context)
@@ -186,9 +186,9 @@ static func is_not_String(value, context: String) -> Dictionary:
 	return _result(success, passed, result, context)
 
 static func is_not_Transform(value, context: String) -> Dictionary:
-	var passed: String = "%s is not builtin: Transform" % value
-	var failed: String = "%s is builtin: Transform" % value
-	var success = not value is Transform
+	var passed: String = "%s is not builtin: Transform3D" % value
+	var failed: String = "%s is builtin: Transform3D" % value
+	var success = not value is Transform3D
 	var expected = passed
 	var result = passed if success else failed
 	return _result(success, passed, result, context)

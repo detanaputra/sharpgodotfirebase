@@ -1,8 +1,8 @@
-extends Reference
+extends RefCounted
 
-var name: String setget ,_get_sanitized_name
+var name: String: get = _get_sanitized_name
 var dir: String
-var path: String setget ,_get_path
+var path: String: get = _get_path
 var methods: Array # TestMethods
 var names: Array # MethodNames
 var time: float = 0.0 # YieldTime
@@ -16,7 +16,7 @@ func _init(script_path: String = "", load_result: int = OK):
 	parse = load_result
 
 func _get_sanitized_name() -> String:
-	var n: String = path.substr(path.find_last("/") + 1)
+	var n: String = path.substr(path.rfind("/") + 1)
 	n = n.replace(".gd", "").replace(".gdc", "").replace(".cs", "")
 	n = n.replace(".test", "").replace("test", "").replace("_", " ")
 	n[0] = n[0].to_upper()

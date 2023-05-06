@@ -1,4 +1,4 @@
-extends Reference
+extends RefCounted
 
 var paths: Array = []
 var _tests: Array = []
@@ -9,7 +9,7 @@ func update(results: Array) -> void:
 		if not result["success"]:
 			paths.append(result["path"])
 			
-func set_tests(root: Reference) -> void:
+func set_tests(root: RefCounted) -> void:
 	_tests.clear()
 	for test in root.get_tests():
 		if paths.has(test["path"]):

@@ -1,4 +1,4 @@
-extends Reference
+extends RefCounted
 
 const STATIC: String = "static "
 const REMOTE: String = "remote "
@@ -38,7 +38,7 @@ func method(name: String, keyword: String = "") -> Method:
 	return methods[name]
 
 func clear():
-	if is_instance_valid(object) and object is Object and not object is Reference:
+	if is_instance_valid(object) and object is Object and not object is RefCounted:
 		object.free()
 	object = null
 
@@ -132,7 +132,7 @@ func double(deps: Array = [], show_error = true) -> Object:
 			push_error("WAT: You can only create one instance of a double. Create a new doubler Object for new Test Doubles")
 		return object
 	_created = true
-	if not deps.empty() and dependecies.empty():
+	if not deps.is_empty() and dependecies.is_empty():
 		dependecies = deps
 	object = script().callv("new", dependecies)
 	object.WATRegistry.append(registry)
